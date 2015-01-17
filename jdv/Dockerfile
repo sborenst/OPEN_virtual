@@ -18,9 +18,9 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdv` /bin/bash
 
 # BROWSER ACCESS TO JDV WEB APPLICATIONS
-# http://<docker_host>:10990   			:	admin / brms
-# http://<docker_host>:9080/dashboard/   	:	dashboardAdmin / Fake-pwd1
-# http://<docker_host>:9080/modeshape-cmis/   	:	modeshapeUser / Fake-pwd1
+# https://<docker_host>:10990                       :    admin / brms
+# http://<docker_host>:9080/dashboard/              :    dashboardAdmin / Fake-pwd1
+# http://<docker_host>:9080/modeshape-cmis/         :    modeshapeUser / Fake-pwd1
 
 USER root
 RUN mkdir -p /opt/OPEN-jdv/config
