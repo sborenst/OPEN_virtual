@@ -12,7 +12,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-datavirt .
 
 # START PROCEDURE
-# docker run -p 9080:8080 -p 10990:9990 -d --name=jdv gpe-datavirt
+# docker run -p 9080:8080 -p 10990:9990  -p 10999:9999 -d --name=jdv gpe-datavirt
 
 # SHELL ACCESS TO JDV CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdv` /bin/bash
@@ -23,6 +23,13 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # http://<docker_host>:9080/modeshape-cmis/         :    modeshapeUser / Fake-pwd1
 
 USER root
+
+# Expose the following ports:
+# 9999:   EAP management port so as to support creation of a remote server instance in JBDS
+# 35432:  ODBC port
+# 31000:  JDBC port
+EXPOSE 9999 35432 31000
+
 RUN mkdir -p /opt/OPEN-jdv/config
 
 ADD ./config/start-container.sh /opt/OPEN-jdv/config/start-container.sh
