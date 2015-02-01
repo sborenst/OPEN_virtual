@@ -24,18 +24,31 @@ MAINTAINER JA Bride <jbride@redhat.com>
 
 USER root
 
+####### RDBMS DRIVERS ############
+RUN yum install -y postgresql-jdbc
+
+ENV CONTAINER_CONFIG /opt/OPEN-jdv/config
+
 # Expose the following ports:
 # 9999:   EAP management port so as to support creation of a remote server instance in JBDS
 # 35432:  ODBC port
 # 31000:  JDBC port
 EXPOSE 9999 35432 31000
 
-RUN mkdir -p /opt/OPEN-jdv/config
+RUN mkdir -p $CONTAINER_CONFIG
 
-ADD ./config/start-container.sh /opt/OPEN-jdv/config/start-container.sh
+ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
+ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
-RUN chown -R jboss:1000 /opt/OPEN-jdv
-RUN chown -R jboss:1000 $JBOSS_HOME/standalone/configuration
+ADD .config/modules $JBOSS_HOME/system/layers/base
+RUN chown -R jboss:1000 $CONTAINER_CONFIG
+RUN chown -R jboss:1000 $JBOSS_HOME
+
+# start eap in admin-only mode
+RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone-full-ha.xml --admin-only &
+sleep 15
+$JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
+
 
 USER jboss
 CMD ["/opt/OPEN-jdv/config/start-container.sh"]

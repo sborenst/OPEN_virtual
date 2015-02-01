@@ -1,0 +1,31 @@
+batch
+
+# postgresql module
+subsystem=datasources/jdbc-driver=postgresql/:add(driver-name=postgresql,driver-module-name=org.postgresql.jdbc,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource,jdbc-compliant=false)
+
+# apaccustomers-db
+subsystem=datasources/data-source=apaccustomers-cp:add(jndi-name=java:jboss/datasources/apaccustomers-cp,connection-url="${pgsql.jdv.connection_url}apaccustomers",driver-class=org.postgresql.Driver,driver-name=postgresql,user-name=${pgsql.jdv.user},password=${pgsql.jdv.password},pool-name=apaccustomers_ds_pool,max-pool-size=5,min-pool-size=0,jta=true,allocation-retry=12,allocation-retry-wait-millis=10000)
+/profile=pfpCore/subsystem=datasources/data-source=apaccustomers-cp/:write-attribute(name=new-connection-sql,value="${org.jboss.processFlow.connection.test}")
+/profile=pfpCore/subsystem=datasources/data-source=apaccustomers-cp:enable()
+
+# brokerinfo-db
+subsystem=datasources/data-source=brokerinfo-cp:add(jndi-name=java:jboss/datasources/brokerinfo-cp,connection-url="${pgsql.jdv.connection_url}brokerinfo",driver-class=org.postgresql.Driver,driver-name=postgresql,user-name=${pgsql.jdv.user},password=${pgsql.jdv.password},pool-name=brokerinfo_ds_pool,max-pool-size=5,min-pool-size=0,jta=true,allocation-retry=12,allocation-retry-wait-millis=10000)
+/profile=pfpCore/subsystem=datasources/data-source=brokerinfo-cp/:write-attribute(name=new-connection-sql,value="${org.jboss.processFlow.connection.test}")
+/profile=pfpCore/subsystem=datasources/data-source=brokerinfo-cp:enable()
+
+# eucustomers-db
+subsystem=datasources/data-source=eucustomers-cp:add(jndi-name=java:jboss/datasources/eucustomers-cp,connection-url="${pgsql.jdv.connection_url}eucustomers",driver-class=org.postgresql.Driver,driver-name=postgresql,user-name=${pgsql.jdv.user},password=${pgsql.jdv.password},pool-name=eucustomers_ds_pool,max-pool-size=5,min-pool-size=0,jta=true,allocation-retry=12,allocation-retry-wait-millis=10000)
+/profile=pfpCore/subsystem=datasources/data-source=eucustomers-cp/:write-attribute(name=new-connection-sql,value="${org.jboss.processFlow.connection.test}")
+/profile=pfpCore/subsystem=datasources/data-source=eucustomers-cp:enable()
+
+# products-db
+subsystem=datasources/data-source=products-cp:add(jndi-name=java:jboss/datasources/products-cp,connection-url="${pgsql.jdv.connection_url}products",driver-class=org.postgresql.Driver,driver-name=postgresql,user-name=${pgsql.jdv.user},password=${pgsql.jdv.password},pool-name=products_ds_pool,max-pool-size=5,min-pool-size=0,jta=true,allocation-retry=12,allocation-retry-wait-millis=10000)
+/profile=pfpCore/subsystem=datasources/data-source=products-cp/:write-attribute(name=new-connection-sql,value="${org.jboss.processFlow.connection.test}")
+/profile=pfpCore/subsystem=datasources/data-source=products-cp:enable()
+
+# uscustomers-db
+subsystem=datasources/data-source=uscustomers-cp:add(jndi-name=java:jboss/datasources/uscustomers-cp,connection-url="${pgsql.jdv.connection_url}uscustomers",driver-class=org.postgresql.Driver,driver-name=postgresql,user-name=${pgsql.jdv.user},password=${pgsql.jdv.password},pool-name=uscustomers_ds_pool,max-pool-size=5,min-pool-size=0,jta=true,allocation-retry=12,allocation-retry-wait-millis=10000)
+/profile=pfpCore/subsystem=datasources/data-source=uscustomers-cp/:write-attribute(name=new-connection-sql,value="${org.jboss.processFlow.connection.test}")
+/profile=pfpCore/subsystem=datasources/data-source=uscustomers-cp:enable()
+
+run-batch
