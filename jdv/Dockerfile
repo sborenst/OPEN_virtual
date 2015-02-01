@@ -5,10 +5,10 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # BUILD PROCEDURE
 # cd $CONTAINER_HOME
 # git clone http://git.app.eng.bos.redhat.com/git/jboss-dockerfiles.git
-# git clone https://github.com/redhat-gpe/OPEN-docker.git
+# git clone https://github.com/redhat-gpe/OPEN_docker.git
 # cd $CONTAINER_HOME/jboss-dockerfiles/datavirt/6.1
 # docker build --rm -t jboss-datavirt:6.1 .
-# cd $CONTAINER_HOME/OPEN-docker/jdv
+# cd $CONTAINER_HOME/OPEN_docker/jdv
 # docker build --rm -t gpe-datavirt .
 
 # START PROCEDURE
@@ -40,14 +40,14 @@ RUN mkdir -p $CONTAINER_CONFIG
 ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
-ADD .config/modules $JBOSS_HOME/system/layers/base
+ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
 RUN chown -R jboss:1000 $CONTAINER_CONFIG
 RUN chown -R jboss:1000 $JBOSS_HOME
 
 # start eap in admin-only mode
-RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone-full-ha.xml --admin-only &
-sleep 15
-$JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
+RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone.xml --admin-only & \
+    sleep 15s &&\
+    $JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
 
 
 USER jboss
