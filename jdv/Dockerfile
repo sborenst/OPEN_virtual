@@ -12,7 +12,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-datavirt .
 
 # START PROCEDURE
-# docker run -p 9080:8080 -p 10990:9990  -p 10999:9999 -d --name=jdv gpe-datavirt
+# docker run -p 9080:8080 -p 10990:9990  -p 10999:9999 -p 36432:35432 -p 32000:31000 --link=gpe-pgsql:postgresql -d --name=jdv gpe-datavirt
 
 # SHELL ACCESS TO JDV CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdv` /bin/bash
@@ -41,14 +41,15 @@ ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
 ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
+RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
 RUN chown -R jboss:1000 $CONTAINER_CONFIG
 RUN chown -R jboss:1000 $JBOSS_HOME
 
 # start eap in admin-only mode
+USER jboss
 RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone.xml --admin-only & \
     sleep 15s &&\
     $JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
 
 
-USER jboss
 CMD ["/opt/OPEN-jdv/config/start-container.sh"]
