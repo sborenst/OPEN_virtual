@@ -8,6 +8,7 @@ CREATE TABLE BrokerInformation (
   BrokerFirstName varchar(10) NOT NULL,
   PRIMARY KEY (BrokerId)
 );
+ALTER TABLE BrokerInformation OWNER TO jdv;
 
 INSERT INTO BrokerInformation VALUES ('B1231','Young','Andre'),('B1232','Broadus','Calvin'),('B1233','Townshend','Pete'),('B1234','Daddy','Puff'),('B1235','Carter','Shawn'),('B1236','','Prince'),('B1237','McEnroe','John');
 
@@ -16,6 +17,7 @@ CREATE TABLE BrokerCustomer (
   CustomerID varchar(15) DEFAULT NULL,
   CONSTRAINT FK_BrokerId_1 FOREIGN KEY (BrokerId) REFERENCES BrokerInformation (BrokerId)
 );
+ALTER TABLE BrokerCustomer OWNER TO jdv;
 
 INSERT INTO BrokerCustomer VALUES ('B1234','CST01002'),('B1235','CST01007'),('B1233','CST01003'),('B1231','CST01006'),('B1232','CST01004'),('B1237','CST01009'),('B1236','CST01010'),('B1232','CST01011'),('B1237','CST01005'),('B1236','CST01012'),('B1236','CST01013'),('B1236','CST01016');
 
@@ -39,6 +41,7 @@ CREATE TABLE ACCOUNT (
   DATECLOSED timestamp DEFAULT NULL,
   PRIMARY KEY (AccountId)
 );
+ALTER TABLE ACCOUNT OWNER TO jdv;
 
 
 --
@@ -53,6 +56,7 @@ CREATE TABLE ACCOUNTHOLDINGS (
   ProductShares decimal(20,6) DEFAULT NULL,
   PRIMARY KEY (TransactionID)
 );
+ALTER TABLE ACCOUNTHOLDINGS OWNER TO jdv;
 
 --
 -- Table structure for table CUSTOMER
@@ -72,6 +76,7 @@ CREATE TABLE CUSTOMER (
   PhoneNumber varchar(30) DEFAULT NULL,
   PRIMARY KEY (CustID)
 );
+ALTER TABLE CUSTOMER OWNER TO jdv;
 
 ------- CREATE CONSTRAINTS  ----------------------------
 
@@ -123,6 +128,7 @@ CREATE TABLE account (
   DATECLOSED timestamp DEFAULT NULL,
   PRIMARY KEY (AccountId)
 );
+ALTER TABLE account OWNER TO jdv;
 
 --
 -- Table structure for table accountholdings
@@ -136,6 +142,7 @@ CREATE TABLE accountholdings (
   ProductShares decimal(20,6) DEFAULT NULL,
   PRIMARY KEY (TransactionID)
 );
+ALTER TABLE accountholdings OWNER TO jdv;
 
 
 --
@@ -156,6 +163,7 @@ CREATE TABLE customer (
   PhoneNumber varchar(30) DEFAULT NULL,
   PRIMARY KEY (CustomerID)
 );
+ALTER TABLE customer OWNER TO jdv;
 
 --------------- CREATE CONSTRAINTS -------------------------
 
@@ -212,6 +220,8 @@ CREATE TABLE productdata (
   PrimaryBusiness varchar(30) DEFAULT NULL,
   PRIMARY KEY (ProductID)
 );
+ALTER TABLE productdata OWNER TO jdv;
+
 
 --
 -- Table structure for table productsymbols
@@ -223,6 +233,7 @@ CREATE TABLE productsymbols (
   SYMBOL varchar(10) NOT NULL,
   CUSIP varchar(20) DEFAULT NULL
 );
+ALTER TABLE productsymbols OWNER TO jdv;
 
 ------------ CREATE CONSTRAINTS ------------------
 
@@ -259,6 +270,7 @@ CREATE TABLE account (
   DATECLOSED timestamp DEFAULT NULL,
   PRIMARY KEY (AccountID)
 );
+ALTER TABLE account OWNER TO jdv;
 
 --
 -- Table structure for table accountholdings
@@ -272,6 +284,7 @@ CREATE TABLE accountholdings (
   ProductShares decimal(20,6) NOT NULL,
   PRIMARY KEY (TransactionID)
 );
+ALTER TABLE accountholdings OWNER TO jdv;
 
 
 --
@@ -291,6 +304,7 @@ CREATE TABLE customer (
   Phone varchar(30) DEFAULT NULL,
   PRIMARY KEY (SSN)
 );
+ALTER TABLE customer OWNER TO jdv;
 
 ------- CREATE CONSTRAINTS  ----------------------------
 
