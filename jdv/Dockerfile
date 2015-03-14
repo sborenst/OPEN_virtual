@@ -1,14 +1,10 @@
-#FROM docker-registry.usersys.redhat.com/goldmann/jboss-datavirt:latest
-FROM jboss-datavirt:6.1
+FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
 MAINTAINER JA Bride <jbride@redhat.com>
 
 # BUILD PROCEDURE
+# start Red Hat VPN
 # cd $CONTAINER_HOME
-# git clone http://git.app.eng.bos.redhat.com/git/jboss-dockerfiles.git
 # git clone https://github.com/redhat-gpe/OPEN_docker.git
-# cd $CONTAINER_HOME/jboss-dockerfiles/standalone/datavirt/6.1
-# git checkout gpe
-# docker build --rm -t jboss-datavirt:6.1 .
 # cd $CONTAINER_HOME/OPEN_docker/jdv
 # docker build --rm -t gpe-datavirt .
 
@@ -19,9 +15,9 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdv` /bin/bash
 
 # BROWSER ACCESS TO JDV WEB APPLICATIONS
-# https://<docker_host>:10990                       :    admin / brms
-# http://<docker_host>:9080/dashboard/              :    dashboardAdmin / Fake-pwd1
-# http://<docker_host>:9080/modeshape-cmis/         :    modeshapeUser / Fake-pwd1
+# https://<docker_host>:10990                       :    admin / jb0ssredhat!
+# http://<docker_host>:9080/dashboard/              :    dashboardAdmin / jb0ssredhat!
+# http://<docker_host>:9080/modeshape-cmis/         :    modeshapeUser / jb0ssredhat!
 
 USER root
 
@@ -38,19 +34,23 @@ EXPOSE 9999 35432 31000
 
 RUN mkdir -p $CONTAINER_CONFIG
 
+ADD ./config/auto.xml $CONTAINER_CONFIG/auto.xml
 ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
-ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
+#ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
 ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
+ADD ./downloads/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
 RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
 RUN chown -R jboss:1000 $CONTAINER_CONFIG
 RUN chown -R jboss:1000 $JBOSS_HOME
+
+RUN java -jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/auto.xml && \
+    rm $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
 
 # start eap in admin-only mode
 USER jboss
 RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone.xml --admin-only & \
     sleep 15s &&\
     $JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
-
 
 CMD ["/opt/OPEN-jdv/config/start-container.sh"]
