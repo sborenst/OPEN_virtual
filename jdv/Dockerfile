@@ -25,6 +25,7 @@ USER root
 RUN yum install -y postgresql-jdbc
 
 ENV CONTAINER_CONFIG /opt/OPEN-jdv/config
+ENV JBOSS_HOME /opt/jboss-eap-6.3
 
 # Expose the following ports:
 # 9999:   EAP management port so as to support creation of a remote server instance in JBDS
@@ -35,17 +36,18 @@ EXPOSE 9999 35432 31000
 RUN mkdir -p $CONTAINER_CONFIG
 
 ADD ./config/auto.xml $CONTAINER_CONFIG/auto.xml
-ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
-ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
-#ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
-ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
 ADD ./downloads/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
-RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
-RUN chown -R jboss:1000 $CONTAINER_CONFIG
-RUN chown -R jboss:1000 $JBOSS_HOME
 
 RUN java -jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/auto.xml && \
     rm $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
+
+ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
+ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
+ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
+RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
+RUN chown -R jboss:1000 /opt
+
+RUN yum install -y iproute
 
 # start eap in admin-only mode
 USER jboss
