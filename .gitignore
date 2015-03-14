@@ -1,6 +1,7 @@
 *.class
 *.html
 *.zip
+*.jar
 *~
 ~lock.*
 ~$*
