@@ -6,7 +6,8 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # cd $CONTAINER_HOME
 # git clone http://git.app.eng.bos.redhat.com/git/jboss-dockerfiles.git
 # git clone https://github.com/redhat-gpe/OPEN_docker.git
-# cd $CONTAINER_HOME/jboss-dockerfiles/datavirt/6.1
+# cd $CONTAINER_HOME/jboss-dockerfiles/standalone/datavirt/6.1
+# git checkout gpe
 # docker build --rm -t jboss-datavirt:6.1 .
 # cd $CONTAINER_HOME/OPEN_docker/jdv
 # docker build --rm -t gpe-datavirt .
