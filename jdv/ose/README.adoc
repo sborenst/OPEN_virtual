@@ -1,0 +1,12 @@
+
+== create gpsetraining1 user and JDV project
+
+
+-----
+htpasswd -b /etc/openshift-passwd gpsetraining1 redhat
+-----
+
+-----
+openshift ex new-project gpsetraining1.project --display-name="gpsetraining1.project" \
+--admin=htpasswd:gpsetraining1
+-----
