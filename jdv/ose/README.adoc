@@ -1,0 +1,56 @@
+== DNS
+yum install dnsmasq
+
+/etc/dnsmasq.conf
+
+-----
+strict-order
+domain-needed
+local=/jbrideratwater.com/
+bind-dynamic
+log-queries
+-----
+
+/etc/hosts
+
+-----
+192.168.122.182 rhel71.master broker00.ose.jbrideratwater.com
+192.168.122.53  rhel71.node   node.ose.jbrideratwater.com
+-----
+
+/etc/resolv.conf
+
+-----
+search master
+nameserver 192.168.122.182
+nameserver 192.168.122.1
+-----
+
+== create gpsetraining1 user and JDV project
+
+-----
+useradd gpsetraining1
+-----
+
+-----
+htpasswd -b /etc/openshift-passwd gpsetraining1 redhat
+-----
+
+-----
+openshift ex new-project gpsetraining1.project --display-name="gpsetraining1.project" \
+--admin=htpasswd:gpsetraining1
+osc create -f /opt/OPEN_docker/jdv/ose/jdv-quota.json --namespace=gpsetraining1.project
+-----
+
+-----
+su - gpsetraining1
+mkdir .kube
+openshift ex login \
+--certificate-authority=/var/lib/openshift/openshift.local.certificates/ca/root.crt \
+--cluster=master --server=https://broker00.ose.jbrideratwater.com:8443 \
+--namespace=gpsetraining1.project
+-----
+
+osc create -f /opt/OPEN_docker/jdv/ose/open-jdv-dev.json
+
+openshift cli process -f infinispan.json | openshift cli create -f -      ????

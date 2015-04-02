@@ -18,6 +18,12 @@
           "version": "v1beta1",
           "id": "open-jdv-dev-manifest-id",
           "containers": [{
+            "name": "open-gpe-pgsql-container",
+            "image": "gpe-pgsql",
+            "ports": [{
+              "containerPort": 5432
+            }]
+          },{
             "name": "open-jdv-dev-container",
             "image": "gpe-datavirt",
             "ports": [{

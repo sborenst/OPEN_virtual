@@ -1,4 +1,5 @@
-FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
+#FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
+FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk8:41
 MAINTAINER JA Bride <jbride@redhat.com>
 
 # BUILD PROCEDURE
@@ -41,6 +42,6 @@ ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
 RUN chown -R jboss:1000 /opt
 
-RUN yum install -y iproute
+RUN yum install -y iproute && yum clean all -y
 
 CMD ["/opt/OPEN-jdg/config/start-container.sh"]

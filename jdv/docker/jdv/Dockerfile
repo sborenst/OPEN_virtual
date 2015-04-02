@@ -1,4 +1,5 @@
-FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
+#FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
+FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk8:41
 MAINTAINER JA Bride <jbride@redhat.com>
 
 # BUILD PROCEDURE
@@ -21,8 +22,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 
 USER root
 
-####### RDBMS DRIVERS ############
-RUN yum install -y postgresql-jdbc
+RUN yum install -y postgresql-jdbc iproute && yum clean all -y
 
 ENV CONTAINER_CONFIG /opt/OPEN-jdv/config
 ENV JBOSS_HOME /opt/jboss-eap-6.3
@@ -46,8 +46,6 @@ ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
 ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
 RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
 RUN chown -R jboss:1000 /opt
-
-RUN yum install -y iproute
 
 # start eap in admin-only mode
 USER jboss
