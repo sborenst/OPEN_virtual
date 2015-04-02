@@ -5,7 +5,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # start Red Hat VPN
 # cd $CONTAINER_HOME
 # git clone https://github.com/redhat-gpe/OPEN_docker.git
-# cd $CONTAINER_HOME/OPEN_docker/jdv
+# cd $CONTAINER_HOME/OPEN_docker/jdv/docker/jdv
 # docker build --rm -t gpe-datavirt .
 
 # START PROCEDURE

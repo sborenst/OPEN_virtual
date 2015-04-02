@@ -9,7 +9,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-datagrid .
 
 # START PROCEDURE
-# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -p 13222:11222 -d --name=jdg gpe-datagrid
+# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -p 13222:11222 -p 13221:11221 -d --name=jdg gpe-datagrid
 
 # SHELL ACCESS TO JDG CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdg` /bin/bash
@@ -24,8 +24,11 @@ ENV CONTAINER_CONFIG /opt/OPEN-jdg/config
 ENV JBOSS_HOME /opt/jboss-datagrid-6.4.0-server
 
 # Expose the following ports:
+# 9990:   EAP web management port
 # 9999:   EAP management port so as to support creation of a remote server instance in JBDS
-EXPOSE 8080 9990 9999 11222
+# 11222:  Hot-Rod protocol
+# 11221:  Memcached protocol
+EXPOSE 8080 9990 9999 11222 11211
 
 RUN mkdir -p $CONTAINER_CONFIG
 
@@ -40,10 +43,4 @@ RUN chown -R jboss:1000 /opt
 
 RUN yum install -y iproute
 
-# start eap in admin-only mode
-USER jboss
-RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone.xml --admin-only & \
-    sleep 15s &&\
-    $JBOSS_HOME/bin/jboss-cli.sh --connect --file=$CONTAINER_CONFIG/postgresql-setup.cli
-
-CMD ["/opt/OPEN-jdv/config/start-container.sh"]
+CMD ["/opt/OPEN-jdg/config/start-container.sh"]
