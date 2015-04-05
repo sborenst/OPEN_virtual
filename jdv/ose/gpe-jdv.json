@@ -1,0 +1,79 @@
+{
+  "kind": "Template",
+  "apiVersion": "v1beta1",
+  "metadata": {
+    "name": "gpe-jdv-template",
+    "annotations": {
+      "description": "Example of an Infinispan cluster deployed on Openshift v3"
+    }
+  },
+  "items": [
+    {
+      "id": "gpe-jdv-service",
+      "kind": "Service",
+      "apiVersion": "v1beta1",
+      "port": 8080,
+      "containerPort" : 8080,
+      "selector": {
+        "name": "gpe-jdv-service"
+      }
+    },
+     {
+      "id": "gpe-jdv-controller",
+      "kind": "ReplicationController",
+      "apiVersion": "v1beta1",
+      "desiredState": {
+        "replicas": 1,
+        "replicaSelector": {"name": "gpe-jdv-selector"},
+        "podTemplate": {
+          "desiredState": {
+            "manifest": {
+              "version": "v1beta1",
+              "id": "gossip",
+              "containers": [{
+                   "name": "gpe-jdv",
+                   "image": "gpe-jdv",
+                   "ports": [{"containerPort": 8080},{"containerPort": 9990},{"containerPort": 9999},{"containerPort": 31000}]
+              }]
+            }
+          },
+	  "labels": {
+              "name": "gpe-jdv-1"
+          }
+        }
+      },
+      "labels": {
+              "name": "gpe-jdv-2"
+       }
+    },
+    {
+      "id": "gpe-pgsql-controller",
+      "kind": "ReplicationController",
+      "apiVersion": "v1beta1",
+      "desiredState": {
+        "replicas": 1,
+        "replicaSelector": {"name": "gpe-pgsql-pod"},
+        "podTemplate": {
+          "desiredState": {
+            "manifest": {
+              "version": "v1beta1",
+              "id": "gpe-pgsql-pod",
+              "containers": [{
+                   "name": "gpe-pgsql-node",
+                   "image": "gpe-pgsql",
+                   "ports": [{"containerPort": 5432}}]
+              }
+             ]
+            }
+          },
+          "labels": {
+            "name": "gpe-pgsql-pod"
+	  }
+        }
+      },
+      "labels": {
+           "name": "gpe-pgsql-pod"
+      }
+    }
+  ]
+}
