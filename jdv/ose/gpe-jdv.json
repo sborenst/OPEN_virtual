@@ -15,7 +15,7 @@
       "port": 8080,
       "containerPort" : 8080,
       "selector": {
-        "name": "gpe-jdv-service"
+        "name": "gpe-jdv"
       }
     },
      {
@@ -24,7 +24,7 @@
       "apiVersion": "v1beta1",
       "desiredState": {
         "replicas": 1,
-        "replicaSelector": {"name": "gpe-jdv-selector"},
+        "replicaSelector": {"name": "gpe-jdv"},
         "podTemplate": {
           "desiredState": {
             "manifest": {
@@ -38,12 +38,12 @@
             }
           },
 	  "labels": {
-              "name": "gpe-jdv-1"
+              "name": "gpe-jdv"
           }
         }
       },
       "labels": {
-              "name": "gpe-jdv-2"
+              "name": "gpe-jdv"
        }
     },
     {
@@ -61,7 +61,7 @@
               "containers": [{
                    "name": "gpe-pgsql-node",
                    "image": "gpe-pgsql",
-                   "ports": [{"containerPort": 5432}}]
+                   "ports": [{"containerPort": 5432}]
               }
              ]
             }
