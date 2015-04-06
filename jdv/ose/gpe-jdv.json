@@ -32,7 +32,7 @@
               "id": "gossip",
               "containers": [{
                    "name": "gpe-jdv",
-                   "image": "gpe-jdv",
+                   "image": "gpe-datavirt",
                    "ports": [{"containerPort": 8080},{"containerPort": 9990},{"containerPort": 9999},{"containerPort": 31000}]
               }]
             }
@@ -47,12 +47,22 @@
        }
     },
     {
+      "id": "postgresql",
+      "kind": "Service",
+      "apiVersion": "v1beta1",
+      "port": 5432,
+      "containerPort" : 5432,
+      "selector": {
+        "name": "postgresql"
+      }
+    },
+    {
       "id": "gpe-pgsql-controller",
       "kind": "ReplicationController",
       "apiVersion": "v1beta1",
       "desiredState": {
         "replicas": 1,
-        "replicaSelector": {"name": "gpe-pgsql-pod"},
+        "replicaSelector": {"name": "postgresql"},
         "podTemplate": {
           "desiredState": {
             "manifest": {
@@ -67,12 +77,12 @@
             }
           },
           "labels": {
-            "name": "gpe-pgsql-pod"
+            "name": "postgresql"
 	  }
         }
       },
       "labels": {
-           "name": "gpe-pgsql-pod"
+           "name": "postgresql"
       }
     }
   ]
