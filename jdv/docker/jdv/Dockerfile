@@ -47,7 +47,7 @@ ADD ./config/modules $JBOSS_HOME/modules/system/layers/dv
 RUN ln -sf -t $JBOSS_HOME/modules/system/layers/dv/org/postgresql/jdbc/main /usr/share/java/postgresql-jdbc.jar
 RUN chown -R jboss:1000 /opt
 
-# start eap in admin-only mode
+# start eap in admin-only mode and configure postgresql datasource subsystem
 USER jboss
 RUN $JBOSS_HOME/bin/standalone.sh --server-config=standalone.xml --admin-only & \
     sleep 15s &&\

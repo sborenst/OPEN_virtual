@@ -37,9 +37,8 @@ htpasswd -b /etc/openshift-passwd gpsetraining1 redhat
 -----
 
 -----
-openshift ex new-project gpsetraining1.project --display-name="gpsetraining1.project" \
---admin=htpasswd:gpsetraining1
-osc create -f /opt/OPEN_docker/jdv/ose/jdv-quota.json --namespace=gpsetraining1.project
+openshift ex new-project gpsetraining1 --display-name="gpsetraining1" --admin=htpasswd:gpsetraining1
+osc create -f /opt/OPEN_docker/jdv/ose/jdv-quota.json --namespace=gpsetraining1
 -----
 
 -----
@@ -48,9 +47,13 @@ mkdir .kube
 openshift ex login \
 --certificate-authority=/var/lib/openshift/openshift.local.certificates/ca/root.crt \
 --cluster=master --server=https://broker00.ose.jbrideratwater.com:8443 \
---namespace=gpsetraining1.project
+--namespace=gpsetraining1
 -----
 
-osc create -f /opt/OPEN_docker/jdv/ose/open-jdv-dev.json
+openshift cli process -f /opt/OPEN_docker/jdv/ose/gpe-jdv.json | openshift cli create -f -
 
-openshift cli process -f infinispan.json | openshift cli create -f -      ????
+== View jdv log
+
+-----
+nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' 154735d35a36` /bin/bash
+-----
