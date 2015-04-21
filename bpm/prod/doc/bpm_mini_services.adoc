@@ -1,0 +1,360 @@
+:data-uri:
+:toc2:
+:bpmproduct: link:https://access.redhat.com/site/documentation/en-US/Red_Hat_JBoss_BPM_Suite/[Red Hat's BPM Suite 6 product]
+:fileping: link:http://www.jgroups.org/javadoc/org/jgroups/protocols/FILE_PING.html[FILE_PING]
+:rhstorage: link:https://www.redhat.com/en/technologies/storage[Red Hat Storage Server]
+:postgresqlpod: link:https://blog.openshift.com/deploying-postgresql-pod-openshift-v3/[PostgreSQL Pod for OSE 3]
+
+image::images/rhheader.png[width=900]
+
+:numbered!:
+[abstract]
+== BPM Suite 6: Containerized Production Topology
+
+:numbered:
+
+== Overview
+This project provides one approach toward a `containerized` BPM environment suitable for production environments in either an on-premise or public cloud.
+
+== Features
+
+. `Improved Elasticity of BPM runtime components`
++
+The BPM deployment topology created via this project splits BPM Suite 6 into its various sub components.
+Doing so allows these sub components to elastically scale independently of eachother.
+
+. `High Availability Messaging Tier`
++
+Among the sub components of the BPM deployment topology provided by this project is the `messaging tier`.
+Asynchroneous messaging is typically an important inter-process communication mechanism in BPM use-cases.
+Specific to BPM Suite 6, asynchroneous JMS messaging is used as follows:
++
+.. Asynch Execution Server:
+Asnych messaging can provide a temporary buffer to peak requests sent to the BPM Execution Server
+.. Business Activity Monitoring Eventing:
+When BAM eventing is enabled, the process engine has the ability to trigger large quantities of events.
+Rather than persist these events in the same thread of execution of the process engine (and most likely slow the process engine), these BAM events can instead be more quickly sent to a messaging queue.
+
++
+This messaging tier is implemented by the version of Hornetq included in JBoss EAP 6.3.
+Messaging brokers are configured in an active/passive high availability configuration.
+The brokers discover each other in a cloud friendly manner using the {fileping} discovery protocol provided by jgroups.
+The FILE_PING protocol could be swapped out using any of its subclasses depending on the target cloud environment: RACKSPACE_PING, S3_PING, SWIFT_PING or GOOGLE_PING
+
+. `Containerized BPM RDBMS`
++
+This project includes the following RDBMS containers seeded with jbpm and dashbuilder tables and users:
++
+.. `mariadb`
+.. `postgresql`
+
++
+At runtime, the BPM components detect the presence of either of these RDBMS containers and automatically create an appropriate JDBC connection pool.
+
+. `Latest BPM Suite 6 Engineering Release`
++
+This project keeps pace with the latest engineering releases of BPM Suite 6.1
+
+== Roadmap
+
+. `HA configured PostgreSQL`
++
+Specifically, integration with Crunchy Data's {postgresqlpod}
+
+. `Integration with OSE 3`
++
+Orchestrate this deployment topology as one or more kubernets pods in OSE3.
+
+. `JBoss EWS container`
++
+Introduce JBoss EWS container configured with mod_cluster for load-balancing/fail-over of bpm-exec-server nodes.
+
+. `deployment-descriptor configuration`
++
+The `bpm-exec-server-*` nodes should allow for modified deployment-descriptors.
+
+. `bpm-exec-server-* footprint reduction`
++
+Currently, the size of the `bpm-exec-server-*` nodes have a memory footprint of just under 1G.
+This should be reduced to (much) less than 500MB so as to fit comfortably within a `small` OpenShift gear.
+
+
+
+== Production Deployment Topology
+
+image::images/bpms_docker_miniservices.png[]
+
+. `storage-bpmsuite`
++
+Docker container that simulates a shared file system.
+The content of various directories included in this container are shared amongst the the other containers included in this project's production BPM deployment.
+In a cloud environment, this container would be replaced with the storage technology provided by your cloud vendor.
+In an on-premise enivornment, this container would be replaced with a clustered file system (ie:  {rhstorage}) and a SAN.
+The operating system used is in this container is RHEL 7.
+
+. `RDBMS containers`
++
+Choose from either `mariadb` or `postgresql`.
+Both containers are built on RHEL7 and both are seeded with the `jbpm` database needed for execution of the process engines and dashbuilder functionality at runtime.
+
+. `hq*-bpmsuite`
++
+Docker container that includes the version of Hornetq provided by JBoss EAP 6.3.
+In a production environment, one or more of these containers would be started.
+Attached to the container are the shared filesystem volumes provided by the `storage-bpmsuite` container.
+The embedded brokers read and write their journal / page / binding / large-message filesystems to the `storage-bpmsuite` volumes.
+One or more embedded brokers discover eachother using the {fileping} discovery protocol provided by jgroups.
+The FILE_PING protocol could be swapped out using any of its subclasses depending on the target cloud environment: RACKSPACE_PING, S3_PING, SWIFT_PING or GOOGLE_PING.
+The operating system used in this container is RHEL 7.
+
+. `bpm-ui`
++
+Docker container that includes the latest engineering release of BPM Suite 6 configured in the `user interface` profile.
+Specifically, the BPM Console of BPM Suite 6 is enabled.
+However, both the jbpm and drools execution servers are disabled.
+
+. `bpm-exec-server-*`
++
+Docker container that includes the latest engineering release of BPM Suite 6 configured in the `execution-server` profile.
+Specifically, bothe the jbpm and drools execution servers are enabled.
+However, the BPM Console of BPM Suite 6 is disabled.
+
+== Prerequisites
+
+. Development machine with at least 8G RAM and 4 cores
+. RHEL 7 with an active Red Hat Network subscription
++
+The RHEL7 based Docker images built by this project are currently not available in the Docker repository/registry.
+Subsequently, this project requires building of these docker images from the Dockerfiles included in this project.
+The build process requires a RHEL7 host with an active Red Hat Network subscription to RHEL7 entitlements.
+
+. Docker
++
+The host RHEL 7 operating system must have the latest `docker` package installed and enabled.
+Be sure to update your RHEL7 operating system frequently; the docker packages are being updated quite often.
+
+. BPM Suite 6.1 Engineering Release
++
+If you are a partner of Red Hat, please contact us to gain access to the latest engineering release of BPM Suite 6.1 .
+
+. git
+
+== Build Procedure
+
+=== `jboss` operating system user
+This documentation assumes existence of an operating system user called `jboss`.
+Execute the following as root in your RHEL7 host to create this user if it doesn't already exist:
+
+-----
+useradd -u 185 -g 185 -m -d /home/jboss jboss
+-----
+
+=== Add `docker` group to operating system user
+
+
+To avoid having to execute all docker commands as root, the `docker` group should own the docker process and should also be added as a group to the `jboss` user.
+Execute the following in your RHEL7 host operating system:
+
+. su - root
+. chgrp docker /var/run/docker.sock
+. usermod -G docker jboss
+. exit
+
+NOTE: The remainder of this documentation assumes the use of this `jboss` user.
+
+=== Clone this project
+
+. Execute the following on the host RHEL 7 operating system to clone this project from github:
++
+-----
+git clone https://github.com/jbride/docker-images.git
+-----
++
+Cloning of this project will result in a new directory on the host RHEL 7 filesystem called:  `docker-images` .
+
+NOTE: For the purposes of this documentation, the following directory path will be referred to as `$BPM_DOCKER` : `docker-images/bpmsuite/6.1`
+
+=== Download BPM Suite 6 Engineering Release
+
+. If you are partner of Red Hat, please contact us to gain access to the latest engineering releases of BPM Suite 6.1 .
+. Once downloaded, move the BPM Suite 6.1 ER zip file to $BPM_DOCKER/bpm-bpmsuite/resources
+
+=== Build the images
+. Execute the following on the host RHEL 7 operating system:
++
+-----
+cd $BPM_DOCKER
+docker build --rm=true -t storage-bpmsuite storage-bpmsuite
+docker build --rm=true -t mysql-bpmsuite mysql-bpmsuite
+docker build --rm=true -t postgresql-bpmsuite crunchy-node
+docker build --rm=true -t hq-bpmsuite hq-bpmsuite
+docker build --rm=true -t bpm-bpmsuite bpm-bpmsuite
+-----
+
+. Execute `sudo docker images` to view the newly built images in the local Docker repository of your RHEL 7 host.
++
+-----
+[root@carbon ~]# docker images
+REPOSITORY              TAG     IMAGE ID      CREATED     VIRTUAL SIZE
+postgresql-bpmsuite     latest  94c41ac4c6aa  1 day ago   434.4 MB
+mysql-bpmsuite          latest  f55ea100e8ca  2 days ago  623 MB
+bpm-bpmsuite            latest  fucc38f55cd5  2 days ago  1.582 GB
+hq-bpmsuite             latest  d682c3e8e559  4 days ago  833.5 MB
+storage-bpmsuite        latest  0f63ee380988  4 days ago  301.5 MB
+-----
+
+== Startup Procedure
+
+=== storage-bpmsuite
+Run one `storage-bpmsuite` container that simulates a clustered file system
+
+-----
+docker run -d --name="storage-bpmsuite" storage-bpmsuite
+-----
+
+=== hq-bpmsuite
+
+. Run two Hornetq broker nodes configured in HA
++
+-----
+docker run -d --name="hq0-bpmsuite" -e HORNETQ_NODE=hornetq0 -e HORNETQ_BACKUP_NODE=hornetq1 --volumes-from=storage-bpmsuite hq-bpmsuite
+docker run -d --name="hq1-bpmsuite" -e HORNETQ_NODE=hornetq1 -e HORNETQ_BACKUP_NODE=hornetq0 --volumes-from=storage-bpmsuite hq-bpmsuite
+-----
+
+. log into the hq0-bpmsuite container
++
+-----
+nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' hq0-bpmsuite` /bin/bash
+-----
+
+==== Hornetq Container Access and Administration
+
+. `JBoss EAP Management User Credentials`  :   admin / brms
+
+=== BPM RDBMSs
+
+Start either of these RDBMs:
+
+==== postgresql-bpmsuite
+
+. Run one `postgresql-bpmsuite` container
++
+-----
+docker run -d --name="postgresql-bpmsuite" postgresql-bpmsuite
+-----
+
+
+==== mysql-bpmsuite
+. Run one `mysql-bpmsuite` container
++
+-----
+docker run -d --name="mysql-bpmsuite" mysql-bpmsuite
+-----
+
+. log into the mysql RDBMS and view the tables in the jbpm database
++
+-----
+nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' mysql-bpmsuite` /bin/bash
+-----
+
+. get the ip address of the `mysql-bpmsuite` container and remotely log into the database
++
+-----
+mysql -u jbpm -p jbpm -h `docker inspect mysql-bpmsuite | grep IPAddress | cut -d '"' -f 4`
+-----
+
+. enable sql logging on `jbpm` database
++
+At the mysql client (having logged in as `jboss`), execute:
++
+-----
+SET global general_log = 1;
+-----
+
+. view sql queries
+.. use _nsenter_ to gain access to the shell of the mysql-bpmsuite container
+.. tail -f /tmp/mysql_query.log
+
+
+=== xpaas_bpmsuite
+Once both the `mysql-bpmsuite` and `hq0-bpmsuite` containers are running, the `bpm-bpmsuite` containers can be run.
+The `mysql-bpmsuite` and `hq0-bpmsuite` containers are linked to the `bpm-bpmsuite` containers.
+By doing so, the `bpm-bpmsuite` containers are able to detect at runtime the needed information about its linked containers to connect to them.
+
+There are two types of `bpm-bpmsuite` containers:
+
+. `ui-profile` :
++
+Default.  Provides BPM Console and no Execution Server
+
+. `exec-server` :
++
+Provides Execution Server and no BPM Console
+
+
+==== Start `UI-Profile` `bpm-bpmsuite` container:
+
+-----
+bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL
+-----
+
+or
+
+-----
+bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedPostgreSQL
+-----
+
+The output of the above command will be similar to the following:
+
+-----
+Server starting at: 172.17.0.2
+BPM Console available at: http://172.17.0.28:8080/business-central
+Bash command line of your new bpm-bpmsuite container available by executing: nsenter -m -u -n -i -p -t 17997 /bin/bash
+Linked containers as follows:
+[/hq0-bpmsuite:/bpm-bpmsuite/hq0 /mysql-bpmsuite:/bpm-bpmsuite/mysql]
+-----
+
+The above output is valuable as it indicates the URL to access the BPM Console of BPM Suite 6.
+It also provides the command to obtain shell access to the running bpm container.
+
+
+
+==== Start `Exec-Server-Profile` `bpm-bpmsuite` container:
+
+-----
+bpm-bpmsuite/bin/start.sh -c bpm-exec-server-0 -useRemoteHQ -useLinkedMySQL -useSharedBPMFilesystem -execServer
+-----
+
+The output of the above command will be similar to the following:
+
+-----
+-----
+
+The above output is valuable as it indicates the URL to invoke the RESTFul API of the BPM Suite 6 Execution Server
+It also provides the command to obtain shell access to the running bpm container
+
+
+==== BPM Container Access and Administration
+
+. `JBoss EAP Management User Credentials`  :   admin / brms
+
+== Research
+
+. Additional system properties
+.. jbpm.audit.jms.enabled
+.. jbpm.audit.jms.transacted
+.. jbpm.audit.jms.connection.factory
+.. jbpm.audit.jms.queue
+.. jbpm.audit.jms.connection.factory.jndi
+.. jbpm.audit.jms.queue.jndi
+.. org.quartz.properties
+.. org.uberfire.nio.git.daemon.enabled
+.. org.uberfire.nio.git.ssh.enabled
+.. org.uberfire.nio.git.ssh.cert.dir
+
+.
+
+ifdef::showscript[]
+
+?? docker exec rather than nsenter ??
+endif::showscript[]
