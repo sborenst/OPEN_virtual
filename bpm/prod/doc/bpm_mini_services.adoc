@@ -295,7 +295,7 @@ Provides Execution Server and no BPM Console
 ==== Start `UI-Profile` `bpm-bpmsuite` container:
 
 -----
-bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL
+bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
 -----
 
 or

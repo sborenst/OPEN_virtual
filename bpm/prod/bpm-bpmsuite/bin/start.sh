@@ -31,13 +31,16 @@ CONNECTION_PASSWORD=SA
 
 function usage
 {
-     echo "usage: start.sh [ [-c <container_name> ] ] [-h] [-useRemoteHQ] [-useLinkedMySQL] i[-useSharedBPMFilesystem] ]"
+     echo "usage: start.sh [ [-c <container_name> ] ] [-h] [-useRemoteHQ] [-useLinkedMySQL] [-useSharedBPMFilesystem] ]"
 }
 
 while [ "$1" != "" ]; do
     case $1 in
         -c | --container-name ) shift
                                 CONTAINER_NAME=$1
+                                ;;
+        -i | --image-name ) shift
+                                IMAGE_NAME=$1
                                 ;;
         -d | --connection-driver )  shift
                                 CONNECTION_DRIVER=$1
