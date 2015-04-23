@@ -66,8 +66,8 @@ while [ "$1" != "" ]; do
         -useSharedBPMFilesystem ) 
                                 USE_SHARED_BPM_FILESYSTEM=TRUE
                                 ;;
-        -execServer ) 
-                                EXEC_SERVER_PROFILE=TRUE
+        -profile ) 
+                                SERVER_PROFILE=$1
                                 ;;
         -h | --help )           usage
                                 exit
@@ -117,9 +117,9 @@ if [ x$USE_SHARED_BPM_FILESYSTEM == xTRUE ]; then
   dockerrun="$dockerrun --volumes-from=storage-bpmsuite"
 fi
 
-if [ x$EXEC_SERVER_PROFILE == xTRUE ]; then
-  echo "** USE_SHARED_BPM_FILESYSTEM: $EXEC_SERVER_PROFILE"
-  dockerrun="$dockerrun -e EXEC_SERVER_PROFILE=$EXEC_SERVER_PROFILE"
+if [ x$SERVER_PROFILE != "x" ]; then
+  echo "** SERVER_PROFILE: $SERVER_PROFILE"
+  dockerrun="$dockerrun -e SERVER_PROFILE=$SERVER_PROFILE"
 fi
 
 
@@ -134,11 +134,14 @@ docker_pid=$(docker inspect --format '{{ .State.Pid }}' $CONTAINER_NAME)
 # End
 echo ""
 echo "Server starting at: $ip_bpmsuite"
-if [ x$EXEC_SERVER_PROFILE == xTRUE ]; then
+if [ $SERVER_PROFILE == "EXEC_SERVER" ]; then
     echo "BPM Exec Server available at http://$ip_bpmsuite:8080/business-central/rest"
     echo "kie-execution-server available at http://$ip_bpmsuite:8080/kie-execution-server"
+elif [ $SERVER_PROFILE == "UI_SERVER" ]; then
+    echo "BPM Console available at:  http://$ip_bpmsuite:8080/business-central"
 else
     echo "BPM Console available at:  http://$ip_bpmsuite:8080/business-central"
+    echo "BPM Exec Server available at http://$ip_bpmsuite:8080/business-central/rest"
 fi
 echo "Bash command line to your new $CONTAINER_NAME container available by executing: sudo nsenter -m -u -n -i -p -t $docker_pid /bin/bash"
 echo "Linked containers as follows:"

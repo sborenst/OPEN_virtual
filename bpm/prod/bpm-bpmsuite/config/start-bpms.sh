@@ -116,21 +116,23 @@ fi
 
 # *******************
 # BPM PROFILE
-echo -en "\nEXEC_SERVER_PROFILE = $EXEC_SERVER_PROFILE\n\n" >> $START_LOG_FILE
-if [ "x$EXEC_SERVER_PROFILE" != "x" ]; then
+echo -en "\nSERVER_PROFILE = $SERVER_PROFILE\n\n" >> $START_LOG_FILE
+if [ "$SERVER_PROFILE" == "EXEC_SERVER" ]; then
     cp $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/web-exec-server.xml $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/web.xml
     BPM_PROFILE_ARGS="-Dorg.kie.active.profile=exec-server"
 
     # Make sure new kie-exec-server web archive is deployed
     rm -f $JBOSS_HOME/standalone/deployments/kie-execution-server.war.skipdeploy
     touch $JBOSS_HOME/standalone/deployments/kie-execution-server.war.dodeploy
-else
+elif [ "$SERVER_PROFILE" == "UI_SERVER" ]; then
     cp $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/web-ui-server.xml $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/web.xml
     BPM_PROFILE_ARGS="-Dorg.kie.active.profile=ui-server"
 
     # No need for new kie-exec-server web archive
     rm -f $JBOSS_HOME/standalone/deployments/kie-execution-server.war.dodeploy
     touch $JBOSS_HOME/standalone/deployments/kie-execution-server.war.skipdeploy
+else
+    BPM_PROFILE_ARGS="-Dorg.kie.active.profile=full"
 fi
 # *******************
 

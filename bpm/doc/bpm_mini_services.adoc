@@ -184,11 +184,12 @@ NOTE: For the purposes of this documentation, the following directory path will 
 +
 -----
 cd $BPM_DOCKER
-docker build --rm=true -t storage-bpmsuite storage-bpmsuite
-docker build --rm=true -t mysql-bpmsuite mysql-bpmsuite
-docker build --rm=true -t postgresql-bpmsuite crunchy-node
-docker build --rm=true -t hq-bpmsuite hq-bpmsuite
-docker build --rm=true -t bpm-bpmsuite bpm-bpmsuite
+docker build --rm=true -t prod/storage-bpmsuite storage-bpmsuite
+docker build --rm=true -t prod/mysql-bpmsuite mysql-bpmsuite
+docker build --rm=true -t prod/postgresql-bpmsuite crunchy-node
+docker build --rm=true -t prod/hq-bpmsuite hq-bpmsuite
+docker build --rm=true -t prod/bpm-bpmsuite bpm-bpmsuite
+docker build --rm=true -t course/open-bpmsuite open-bpmsuite
 -----
 
 . Execute `sudo docker images` to view the newly built images in the local Docker repository of your RHEL 7 host.
@@ -281,27 +282,36 @@ Once both the `mysql-bpmsuite` and `hq0-bpmsuite` containers are running, the `b
 The `mysql-bpmsuite` and `hq0-bpmsuite` containers are linked to the `bpm-bpmsuite` containers.
 By doing so, the `bpm-bpmsuite` containers are able to detect at runtime the needed information about its linked containers to connect to them.
 
-There are two types of `bpm-bpmsuite` containers:
+There are three types of `bpm-bpmsuite` containers:
 
+. `full-profile`:
++
+Provides BPM Console and Execution Server
 . `ui-profile` :
 +
-Default.  Provides BPM Console and no Execution Server
+Provides BPM Console and no Execution Server
 
 . `exec-server` :
 +
 Provides Execution Server and no BPM Console
 
+==== Start `Full-Profile` `open-bpmsuite` container:
+
+-----
+prod/bpm-bpmsuite/bin/start.sh -c bpm-full -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
+-----
+
 
 ==== Start `UI-Profile` `bpm-bpmsuite` container:
 
 -----
-bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
+prod/bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
 -----
 
 or
 
 -----
-bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedPostgreSQL
+prod/bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedPostgreSQL
 -----
 
 The output of the above command will be similar to the following:
@@ -322,7 +332,7 @@ It also provides the command to obtain shell access to the running bpm container
 ==== Start `Exec-Server-Profile` `bpm-bpmsuite` container:
 
 -----
-bpm-bpmsuite/bin/start.sh -c bpm-exec-server-0 -useRemoteHQ -useLinkedMySQL -useSharedBPMFilesystem -execServer
+prod/bpm-bpmsuite/bin/start.sh -c bpm-exec-server-0 -useRemoteHQ -useLinkedMySQL -useSharedBPMFilesystem -execServer
 -----
 
 The output of the above command will be similar to the following:
