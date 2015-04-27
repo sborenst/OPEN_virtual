@@ -1,11 +1,5 @@
 #!bin/bash
 
-# dashbuilder appears to make queries that specify lowercase tablenames
-# will now make mysql case insensitive
-# also, add entry for general_log_file=/tmp/mysql_query.log
-awk '/\[mysqld\]/{print;print "lower_case_table_names=1";print "general_log_file=/tmp/mysql_query.log";next}1' /etc/my.cnf > /etc/my.cnf.new
-sed -e 's/var\/lib/opt/g' my.cnf.new > /etc/my.cnf
-
 /usr/bin/mysqld_safe &
 sleep 10s
 mysql -u root -e "GRANT ALL ON *.* TO 'jbpm'@'localhost' IDENTIFIED BY 'jbpm';"

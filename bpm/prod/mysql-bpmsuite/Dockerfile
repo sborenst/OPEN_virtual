@@ -2,9 +2,15 @@ FROM docker-registry.usersys.redhat.com/brew/rhel7:1
 
 RUN yum -y update && yum -y install mariadb-server && yum clean all
 
+# dashbuilder appears to make queries that specify lowercase tablenames
+# will now make mysql case insensitive
+# also, add entry for general_log_file=/tmp/mysql_query.log
+RUN awk '/\[mysqld\]/{print;print "lower_case_table_names=1";print "general_log_file=/tmp/mysql_query.log";next}1' /etc/my.cnf > /etc/my.cnf.new
+RUN sed -e 's/var\/lib/opt/g' my.cnf.new > /etc/my.cnf
+RUN chown -R mysql:mysql /opt/mysql
+
 # Init mysql
 RUN mysql_install_db
-RUN chown -R mysql:mysql /var/lib/mysql
 
 # Add admin user
 RUN /usr/bin/mysqld_safe & \
