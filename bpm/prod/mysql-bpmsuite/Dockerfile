@@ -13,10 +13,10 @@ RUN /usr/bin/mysqld_safe & \
 
 # MySQL - create jboss user and bpm suite 6.1 schema
 ADD ./sql /sql
-ADD /create-schema.sh /create-schema.sh
-RUN chmod 755 /create-schema.sh
+ADD /configure.sh /configure.sh
+RUN chmod 755 /configure.sh
 
-RUN /create-schema.sh
+RUN /configure.sh
 
 #Expose port 3306
 EXPOSE 3306
