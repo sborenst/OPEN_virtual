@@ -27,14 +27,13 @@ Doing so allows these sub components to elastically scale independently of eacho
 +
 Among the sub components of the BPM deployment topology provided by this project is the `messaging tier`.
 Asynchroneous messaging is typically an important inter-process communication mechanism in BPM use-cases.
-Specific to BPM Suite 6, asynchroneous JMS messaging is used as follows:
+Specific to BPM Suite 6, asynchronous JMS messaging is used as follows:
 +
 .. Asynch Execution Server:
 Asnych messaging can provide a temporary buffer to peak requests sent to the BPM Execution Server
 .. Business Activity Monitoring Eventing:
 When BAM eventing is enabled, the process engine has the ability to trigger large quantities of events.
 Rather than persist these events in the same thread of execution of the process engine (and most likely slow the process engine), these BAM events can instead be more quickly sent to a messaging queue.
-
 +
 This messaging tier is implemented by the version of Hornetq included in JBoss EAP 6.3.
 Messaging brokers are configured in an active/passive high availability configuration.
@@ -167,31 +166,29 @@ NOTE: The remainder of this documentation assumes the use of this `jboss` user.
 . Execute the following on the host RHEL 7 operating system to clone this project from github:
 +
 -----
-git clone https://github.com/jbride/docker-images.git
+git clone https://github.com/redhat-gpe/OPEN_docker.git
 -----
 +
-Cloning of this project will result in a new directory on the host RHEL 7 filesystem called:  `docker-images` .
+Cloning of this project will result in a new directory on the host RHEL 7 filesystem called:  `OPEN_docker` .
 
-NOTE: For the purposes of this documentation, the following directory path will be referred to as `$BPM_DOCKER` : `docker-images/bpmsuite/6.1`
+NOTE: For the purposes of this documentation, the following directory path will be referred to as `$BPM_DOCKER` : `OPEN_docker/bpm`
 
-=== Download BPM Suite 6 Engineering Release
+=== Download BPM Suite 6.1
 
-. If you are partner of Red Hat, please contact us to gain access to the latest engineering releases of BPM Suite 6.1 .
-. Once downloaded, move the BPM Suite 6.1 ER zip file to $BPM_DOCKER/bpm-bpmsuite/resources
+Once downloaded, move the BPM Suite 6.1 zip file to $BPM_DOCKER/prod/bpm-bpmsuite/resources
 
 === Build the images
+. $BPM_DOCKER/prod
 . Execute the following on the host RHEL 7 operating system:
 +
 -----
 cd $BPM_DOCKER
-docker build --rm=true -t prod/storage-bpmsuite storage-bpmsuite
-docker build --rm=true -t prod/mysql-bpmsuite mysql-bpmsuite
-docker build --rm=true -t prod/postgresql-bpmsuite crunchy-node
-docker build --rm=true -t prod/hq-bpmsuite hq-bpmsuite
-docker build --rm=true -t prod/bpm-bpmsuite bpm-bpmsuite
-docker build --rm=true -t course/open-bpmsuite open-bpmsuite
+docker build --rm=true -t storage-bpmsuite storage-bpmsuite
+docker build --rm=true -t mysql-bpmsuite mysql-bpmsuite
+docker build --rm=true -t postgresql-bpmsuite crunchy-node
+docker build --rm=true -t hq-bpmsuite hq-bpmsuite
+docker build --rm=true -t bpm-bpmsuite bpm-bpmsuite
 -----
-
 . Execute `sudo docker images` to view the newly built images in the local Docker repository of your RHEL 7 host.
 +
 -----
@@ -204,6 +201,10 @@ hq-bpmsuite             latest  d682c3e8e559  4 days ago  833.5 MB
 storage-bpmsuite        latest  0f63ee380988  4 days ago  301.5 MB
 -----
 
+. *Optional*: build container to support Global Enablement BPM course
+.. cd $BPM_DOCKER/course
+.. docker build --rm=true -t open-bpmsuite open-bpmsuite
+
 == Startup Procedure
 
 === storage-bpmsuite
@@ -214,6 +215,8 @@ docker run -d --name="storage-bpmsuite" storage-bpmsuite
 -----
 
 === hq-bpmsuite
+This section is optional.
+Use if interested in having BPM use remote JMS messaging brokers configured in HA.
 
 . Run two Hornetq broker nodes configured in HA
 +
@@ -252,28 +255,31 @@ docker run -d --name="postgresql-bpmsuite" postgresql-bpmsuite
 docker run -d --name="mysql-bpmsuite" mysql-bpmsuite
 -----
 
-. log into the mysql RDBMS and view the tables in the jbpm database
+. Log into the mysql RDBMS and view the tables in the jbpm database
 +
 -----
 nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' mysql-bpmsuite` /bin/bash
 -----
 
-. get the ip address of the `mysql-bpmsuite` container and remotely log into the database
+. Get the ip address of the `mysql-bpmsuite` container and log into the mariadb-server
 +
 -----
 mysql -u jbpm -p jbpm -h `docker inspect mysql-bpmsuite | grep IPAddress | cut -d '"' -f 4`
 -----
++
+[NOTE]
+The above command is to be executed in the RHEL7 host OS that the `mysql-bpmsuite` container runs on.
 
 . enable sql logging on `jbpm` database
 +
-At the mysql client (having logged in as `jboss`), execute:
+At the mysql client (having logged in as `jbpm`), execute:
 +
 -----
 SET global general_log = 1;
 -----
 
 . view sql queries
-.. use _nsenter_ to gain access to the shell of the mysql-bpmsuite container
+.. use _nsenter_ to gain access to the shell of the `mysql-bpmsuite` container
 .. tail -f /tmp/mysql_query.log
 
 
@@ -282,11 +288,13 @@ Once both the `mysql-bpmsuite` and `hq0-bpmsuite` containers are running, the `b
 The `mysql-bpmsuite` and `hq0-bpmsuite` containers are linked to the `bpm-bpmsuite` containers.
 By doing so, the `bpm-bpmsuite` containers are able to detect at runtime the needed information about its linked containers to connect to them.
 
+==== BPM Profile Types
 There are three types of `bpm-bpmsuite` containers:
 
 . `full-profile`:
 +
-Provides BPM Console and Execution Server
+Provides BPM Console and Execution Server.
+This is the default profile.
 . `ui-profile` :
 +
 Provides BPM Console and no Execution Server
@@ -295,26 +303,34 @@ Provides BPM Console and no Execution Server
 +
 Provides Execution Server and no BPM Console
 
-==== Start `Full-Profile` `open-bpmsuite` container:
+Profile selection occurs when a container is created by passing an argument of: `-profile {profile_type}`
 
------
-prod/bpm-bpmsuite/bin/start.sh -c bpm-full -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
------
+==== Example Start Commands
+
+[width="100%",cols="1,10,5",options="header"]
+|================================================
+||start command|explanation
+|1|prod/bpm-bpmsuite/bin/start.sh \ +
+     -c bpm-full
+     -useSharedFS
+     -useLinkedMySQL
+     -i open-bpmsuite| Configuration to support Global Enablement's _Business Logic Development with BPM Suite 6_ course.
+|2|prod/bpm-bpmsuite/bin/start.sh \ +
+-c bpm-full
+-useSharedFS
+-useLinkedMySQL
+-useRemoteHQ|BPM Production environment with HA messaging and BPM full profile
+|3|prod/bpm-bpmsuite/bin/start.sh \ +
+-c bpm-exec-0
+-useSharedFS
+-useLinkedMySQL
+-useRemoteHQ
+-profile exec-server|Lightweight execution server profile with HA messaging
+|================================================
 
 
-==== Start `UI-Profile` `bpm-bpmsuite` container:
-
------
-prod/bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedMySQL -i open-bpmsuite
------
-
-or
-
------
-prod/bpm-bpmsuite/bin/start.sh -c bpm-ui -useRemoteHQ -useSharedBPMFilesystem -useLinkedPostgreSQL
------
-
-The output of the above command will be similar to the following:
+==== Output From Start Command
+The output of the above commands will be similar to the following:
 
 -----
 Server starting at: 172.17.0.2
@@ -326,23 +342,6 @@ Linked containers as follows:
 
 The above output is valuable as it indicates the URL to access the BPM Console of BPM Suite 6.
 It also provides the command to obtain shell access to the running bpm container.
-
-
-
-==== Start `Exec-Server-Profile` `bpm-bpmsuite` container:
-
------
-prod/bpm-bpmsuite/bin/start.sh -c bpm-exec-server-0 -useRemoteHQ -useLinkedMySQL -useSharedBPMFilesystem -execServer
------
-
-The output of the above command will be similar to the following:
-
------
------
-
-The above output is valuable as it indicates the URL to invoke the RESTFul API of the BPM Suite 6 Execution Server
-It also provides the command to obtain shell access to the running bpm container
-
 
 ==== BPM Container Access and Administration
 

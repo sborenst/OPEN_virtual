@@ -27,11 +27,12 @@ batch
 /system-property=org.guvnor.m2repo.dir/:add(value=${org.guvnor.m2repo.dir:/opt/jboss/bpms/artifact-repo},boot-time=true)
 
 /system-property=org.kie.active.profile/:add(value=${org.kie.active.profile:ui-server},boot-time=true)
-#/system-property=org.kie.dd.mergemode/:add(value=${org.kie.dd.mergemode:unknown},boot-time=true)
 /system-property=org.kie.git.deployments.enabled/:add(value=${org.kie.git.deployments.enabled:false},boot-time=true)
 /system-property=org.kie.auto.deploy.enabled/:add(value=${org.kie.auto.deploy.enabled:true},boot-time=true)
 /system-property=org.kie.override.deploy.enabled/:add(value=${org.kie.override.deploy.enabled:false},boot-time=true)
 /system-property=org.quartz.properties/:add(value=${jboss.bpms.quartz.properties:uknown-quartz.properties},boot-time=true)
+#/system-property=org.kie.dd.mergemode/:add(value=${org.kie.dd.mergemode:unknown},boot-time=true)
+#/system-property=org.kie.deployment.desc.location/:add(value=${org.kie.deployment.desc.location:file:/opt/jboss/bpms/resources/deployment/deployment-descriptor-defaults-and-ms.xml},boot-time=true)
 
 #/system-property=org.uberfire.cluster.id/:add(value=${org.uberfire.cluster.id:bpms-cluster},boot-time=true)
 #/system-property=org.uberfire.cluster.zk/:add(value=${org.uberfire.cluster.zk:localhost},boot-time=true)

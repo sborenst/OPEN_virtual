@@ -31,7 +31,7 @@ CONNECTION_PASSWORD=SA
 
 function usage
 {
-     echo "usage: start.sh [ [-c <container_name> ] ] [-h] [-useRemoteHQ] [-useLinkedMySQL] [-useSharedBPMFilesystem] ]"
+     echo "usage: start.sh [ [-c <container_name> ] ] [-h] [-useRemoteHQ] [-useLinkedMySQL] [-useSharedFS] ]"
 }
 
 while [ "$1" != "" ]; do
@@ -63,7 +63,7 @@ while [ "$1" != "" ]; do
         -useLinkedPostgreSQL ) 
                                 USE_LINKED_POSTGRESQL=TRUE
                                 ;;
-        -useSharedBPMFilesystem ) 
+        -useSharedFS ) 
                                 USE_SHARED_BPM_FILESYSTEM=TRUE
                                 ;;
         -profile ) 
@@ -122,7 +122,6 @@ if [ x$SERVER_PROFILE != "x" ]; then
   dockerrun="$dockerrun -e SERVER_PROFILE=$SERVER_PROFILE"
 fi
 
-
 dockerrun="$dockerrun -P -d --name $CONTAINER_NAME $IMAGE_NAME:$IMAGE_TAG"
 echo "dockerrun = docker $dockerrun"
 
@@ -134,10 +133,10 @@ docker_pid=$(docker inspect --format '{{ .State.Pid }}' $CONTAINER_NAME)
 # End
 echo ""
 echo "Server starting at: $ip_bpmsuite"
-if [ $SERVER_PROFILE == "EXEC_SERVER" ]; then
+if [ "$SERVER_PROFILE" == "EXEC_SERVER" ]; then
     echo "BPM Exec Server available at http://$ip_bpmsuite:8080/business-central/rest"
     echo "kie-execution-server available at http://$ip_bpmsuite:8080/kie-execution-server"
-elif [ $SERVER_PROFILE == "UI_SERVER" ]; then
+elif [ "$SERVER_PROFILE" == "UI_SERVER" ]; then
     echo "BPM Console available at:  http://$ip_bpmsuite:8080/business-central"
 else
     echo "BPM Console available at:  http://$ip_bpmsuite:8080/business-central"
