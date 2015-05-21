@@ -19,8 +19,9 @@ RUN mkdir -p $BPMS_ARTIFACT_REPO_DIR
 # Change permissions to user jboss
 RUN chown -R jboss:jboss /opt/shared
 
-RUN mkdir -p /opt/mysql
-RUN chown -R mysql:mysql /opt/mysql
+RUN groupadd -r mysql && useradd -r -g mysql -s /bin/bash -c "mysql user" mysql
+RUN mkdir -p /u01/shared/mysql
+RUN chown -R mysql:mysql /u01/shared/mysql
 
 # Mount as volume
 VOLUME /opt/shared/hq-journal
@@ -29,6 +30,6 @@ VOLUME $BPMS_GIT_DIR
 VOLUME $BPMS_INDEX_DIR
 VOLUME $BPMS_ARTIFACT_REPO_DIR
 
-VOLUME /opt/mysql
+VOLUME /u01/shared/mysql
 
 CMD true
