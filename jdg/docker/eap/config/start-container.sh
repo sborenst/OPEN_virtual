@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JBOSS_HOME=/opt/jboss-datagrid-6.4.0-server
+JBOSS_HOME=/opt/jboss-datagrid-6.5.0-server
 CONTAINER_CONFIG=/opt/OPEN-jdg/config
 START_LOG_FILE=/tmp/start-jdg.log
 
