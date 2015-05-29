@@ -1,4 +1,4 @@
-FROM ce-registry.usersys.redhat.com/jboss-eap-6/eap:6.4
+FROM ce-registry.usersys.redhat.com/jboss-eap-6/eap:6.4-153
 MAINTAINER "JA Bride"
 
 # BUILD PROCEDURE
@@ -6,11 +6,11 @@ MAINTAINER "JA Bride"
 # cd $CONTAINER_HOME
 # git clone https://github.com/redhat-gpe/OPEN_docker.git
 # cd $CONTAINER_HOME/OPEN_docker/jdg/docker/eap
-# docker build --rm -t gpe-eap-jdg .
+# docker build --rm -t gpe-jdg-eap .
 
 # START PROCEDURE
-docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -d --name=eap-jdg gpe-eap-jdg
-nsenter -m -u -n -i -p -t `docker inspect --format '{{ .State.Pid }}' eap-jdg` /bin/bash
+# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -d --name=jdg-eap gpe-jdg-eap
+# nsenter -m -u -n -i -p -t `docker inspect --format '{{ .State.Pid }}' jdg-eap` /bin/bash
 
 # Expose management HTTP and CLI
 EXPOSE 9990 9999
@@ -33,7 +33,9 @@ RUN unzip -o $JDG_MODULES_ZIP_PATH -d /tmp/ && \
     rm -rf $JDG_MODULES_ZIP_PATH && \
     rm -rf /tmp/$JDG_MODULES_NAME
 
-ADD ./config $CONTAINER_CONFIG
+ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
+ADD ./config/start-eap.sh $JBOSS_HOME/bin/start-eap.sh
+RUN chown -R jboss:jboss $JBOSS_HOME
 
-
-#CMD ["/opt/bpm-bpmsuite/config/start-bpms.sh"]
+USER jboss
+CMD ["/opt/eap/bin/start-eap.sh"]

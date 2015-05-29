@@ -10,7 +10,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-jdg-server .
 
 # START PROCEDURE
-# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -p 13222:11222 -p 13221:11221 -d --name=jdg-server gpe-jdg-server
+# docker run -p 8080:8080 -p 9999:9999 -p 11222:11222 -p 11221:11221 -d --name=jdg-server gpe-jdg-server
 
 # SHELL ACCESS TO JDG CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdg` /bin/bash
