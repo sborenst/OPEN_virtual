@@ -1,4 +1,3 @@
-#FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
 FROM ce-registry.usersys.redhat.com/jboss-base-7/jdk8:latest
 MAINTAINER JA Bride <jbride@redhat.com>
 
@@ -10,7 +9,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-jdg-server .
 
 # START PROCEDURE
-# docker run -p 8080:8080 -p 9999:9999 -p 11222:11222 -p 11221:11221 -d --name=jdg-server gpe-jdg-server
+# docker run -p 8080:8080 -p 9999:9999 -p 11222:11222 -p 11221:11221 --volumes-from=jdg-storage -e JBOSS_CONFIG=clustered.xml -d --name=jdg-server gpe-jdg-server
 
 # SHELL ACCESS TO JDG CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdg` /bin/bash
@@ -23,6 +22,7 @@ USER root
 
 ENV CONTAINER_CONFIG /opt/OPEN-jdg/config
 ENV JBOSS_HOME /opt/jboss-datagrid-6.5.0-server
+ENV JBOSS_CONFIG standalone.xml
 
 # Expose the following ports:
 # 9990:   EAP web management port
@@ -40,8 +40,11 @@ RUN unzip $CONTAINER_CONFIG/jboss-datagrid-6.5.0.Beta-server.zip -d /opt && \
 
 ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
-RUN chown -R jboss:1000 /opt
+
+RUN ln -s $JBOSS_HOME /opt/eap
+RUN chown -R jboss:jboss $JBOSS_HOME
 
 RUN yum install -y iproute && yum clean all -y
 
+USER jboss
 CMD ["/opt/OPEN-jdg/config/start-container.sh"]

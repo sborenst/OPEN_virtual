@@ -9,7 +9,7 @@ MAINTAINER "JA Bride"
 # docker build --rm -t gpe-jdg-eap .
 
 # START PROCEDURE
-# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -d --name=jdg-eap gpe-jdg-eap
+# docker run -p 10080:8080 -p 11990:9990  -p 11999:9999 -d --volumes-from=jdg-storage -e JBOSS_CONFIG=standalone-ha.xml --name=jdg-eap gpe-jdg-eap
 # nsenter -m -u -n -i -p -t `docker inspect --format '{{ .State.Pid }}' jdg-eap` /bin/bash
 
 # Expose management HTTP and CLI
