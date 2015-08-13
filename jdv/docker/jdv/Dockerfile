@@ -10,7 +10,7 @@ MAINTAINER JA Bride <jbride@redhat.com>
 # docker build --rm -t gpe-datavirt .
 
 # START PROCEDURE
-# docker run -p 9080:8080 -p 10990:9990  -p 10999:9999 -p 36432:35432 -p 32000:31000 --link=gpe-pgsql:postgresql -d --name=jdv gpe-datavirt
+# docker run -p 9080:8080 -p 10990:9990  -p 10999:9999 -p 36432:35432 -p 32000:31000 --link=gpe-jdv-pgsql:postgresql -d --name=jdv gpe-datavirt
 
 # SHELL ACCESS TO JDV CONTAINER
 # nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' jdv` /bin/bash

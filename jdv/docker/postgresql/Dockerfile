@@ -5,13 +5,13 @@ MAINTAINER JA Bride
 # cd $CONTAINER_HOME
 # git clone https://github.com/redhat-gpe/OPEN-docker.git
 # cd $CONTAINER_HOME/OPEN-docker/postgresql
-# docker build --rm -t gpe-pgsql .
+# docker build --rm -t gpe-jdv-pgsql .
 
 # START PROCEDURE
-# docker run -p 6432:5432 -d --name=gpe-pgsql gpe-pgsql
+# docker run -p 6432:5432 -d --name=gpe-jdv-pgsql gpe-jdv-pgsql
 
 # BASH SHELL ACCESS TO JDV CONTAINER
-# nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' gpe-pgsql` /bin/bash
+# nsenter -m -u -n -i -p -t  `docker inspect --format '{{ .State.Pid }}' gpe-jdv-pgsql` /bin/bash
 
 # PSQL SHELL
 # 	psql -U postgres -h docker1.ose.opentlc.com -p 6432 postgres
