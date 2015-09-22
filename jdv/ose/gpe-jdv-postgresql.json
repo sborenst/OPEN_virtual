@@ -248,7 +248,7 @@
                         "containers": [
                             {
                                 "name": "${DATABASE_SERVICE_NAME}",
-                                "image": "redhat-gpe:/gpe-pgsql",
+                                "image": "redhat-gpe/gpe-pgsql:latest",
                                 "imagePullPolicy": "IfNotPresent",
                                 "ports": [
                                     {
