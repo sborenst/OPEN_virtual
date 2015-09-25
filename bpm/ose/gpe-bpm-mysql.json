@@ -1,0 +1,185 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "gpe-bpm-mysql-template",
+        "creationTimestamp": null,
+        "annotations": {
+            "description": "Environment for the OPEN BPMS Developer course labs",
+            "tags": "OPEN, bpm, mysql"
+        }
+    },
+    "labels": {
+        "template": "gpe-bpm-mysql-template"
+    },
+    "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${DATABASE_SERVICE_NAME}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "name": "mysql",
+                        "protocol": "TCP",
+                        "port": 3306,
+                        "targetPort": 3306
+                    }
+                ],
+                "selector": {
+                    "name": "${DATABASE_SERVICE_NAME}"
+                },
+                "portalIP": "",
+                "type": "ClusterIP",
+                "sessionAffinity": "None"
+            },
+            "status": {
+                "loadBalancer": {}
+            }
+        },
+        {
+            "kind": "PersistentVolumeClaim",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${DATABASE_SERVICE_NAME}"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteOnce"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "${VOLUME_CAPACITY}"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "bpms-mysql",
+                "namespace": "redhat-gpe"
+            },
+            "spec": {
+                "dockerImageRepository": "redhat-gpe/bpms-mysql",
+                "tags": [
+                    {
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "latest"
+                        },
+                        "name": "5.5"
+                    },
+                    {
+                        "name": "latest"
+                    }
+                ]
+            },
+            "status": {
+                "dockerImageRepository": ""
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${DATABASE_SERVICE_NAME}",
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ImageChange",
+                        "imageChangeParams": {
+                            "automatic": true,
+                            "containerNames": [
+                                "${DATABASE_SERVICE_NAME}"
+                            ],
+                            "from": {
+                                "kind": "ImageStreamTag",
+                                "name": "bpms-mysql:latest",
+                                "namespace": "redhat-gpe"
+                            },
+                            "lastTriggeredImage": ""
+                        }
+                    },
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "name": "${DATABASE_SERVICE_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "creationTimestamp": null,
+                        "labels": {
+                            "name": "${DATABASE_SERVICE_NAME}" 
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${DATABASE_SERVICE_NAME}",
+                                "image": "redhat-gpe/bpms-mysql:latest",
+                                "ports": [
+                                    {
+                                        "containerPort": 3306,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "${DATABASE_SERVICE_NAME}-data",
+                                        "mountPath": "/var/lib/mysql/data"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${DATABASE_SERVICE_NAME}-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "${DATABASE_SERVICE_NAME}"
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            },
+            "status": {}
+        }
+    ],
+    "parameters": [
+        {
+            "name": "DATABASE_SERVICE_NAME",
+            "description": "Database service name",
+            "required": true
+        },
+        {
+            "name": "VOLUME_CAPACITY",
+            "description": "Volume space available for data, e.g. 512Mi, 2Gi",
+            "value": "100Mi",
+            "required": true
+        }
+    ]
+}
