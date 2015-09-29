@@ -1,5 +1,6 @@
-FROM centos:7
+# docker build --rm=true -t redhat-gpe/jboss-base .
 
+FROM centos:7
 RUN yum -y install yum-utils unzip tar && \
     yum clean all
 

@@ -1,4 +1,8 @@
-FROM jboss-base-jdk8:latest
+# docker build --rm=true -t redhat-gpe/bpms .
+# docker tag redhat-gpe/bpms infranode00-mwl.localdomain:5000/redhat-gpe/bpms
+# docker push infranode00-mwl.localdomain:5000/redhat-gpe/bpms
+
+FROM redhat-gpe/jboss-base-jdk8:latest
 
 USER root
 

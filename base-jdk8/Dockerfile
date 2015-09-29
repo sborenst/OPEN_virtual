@@ -1,4 +1,6 @@
-FROM jboss-base:latest
+# docker build --rm=true -t redhat-gpe/jboss-base-jdk8 .
+
+FROM redhat-gpe/jboss-base:latest
 
 ENV JAVA_HOME="/usr/lib/jvm/java-1.8.0" \
     JAVA_VENDOR="openjdk" \
