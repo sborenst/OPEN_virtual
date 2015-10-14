@@ -48,7 +48,7 @@
             },
             "spec": {
                 "accessModes": [
-                    "ReadWriteOnce"
+                    "ReadWriteMany"
                 ],
                 "resources": {
                     "requests": {
@@ -65,7 +65,7 @@
                 "namespace": "redhat-gpe"
             },
             "spec": {
-                "dockerImageRepository": "redhat-gpe/bpms-mysql",
+                "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms-mysql",
                 "tags": [
                     {
                         "from": {
@@ -170,6 +170,12 @@
         }
     ],
     "parameters": [
+        {
+            "name": "REDHAT_GPTE_DOCKER_REG_URL",
+            "description": "URL of partner accessible Red Hat GPTE Docker Registry",
+            "value": "infranode00-mwl.localdomain:5000",
+            "required": true
+        },
         {
             "name": "DATABASE_SERVICE_NAME",
             "description": "Database service name",

@@ -109,7 +109,7 @@
             },
             "spec": {
                 "accessModes": [
-                    "ReadWriteOnce"
+                    "ReadWriteMany"
                 ],
                 "resources": {
                     "requests": {
@@ -126,7 +126,7 @@
                 "namespace": "redhat-gpe"
             },
             "spec": {
-                "dockerImageRepository": "redhat-gpe/bpms",
+                "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms",
                 "tags": [
                     {
                         "from": {
@@ -196,7 +196,7 @@
                         "containers": [
                             {
                                 "name": "${APPLICATION_NAME}",
-                                "image": "redhat-gpe/bpms:latest",
+                                "image": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms:latest",
                                 "ports": [
                                     {
                                         "name": "http",
@@ -253,6 +253,12 @@
         }
      ],
     "parameters": [
+        {
+            "name": "REDHAT_GPTE_DOCKER_REG_URL",
+            "description": "URL of partner accessible Red Hat GPTE Docker Registry",
+            "value": "infranode00-mwl.localdomain:5000",
+            "required": true
+        },
         {
             "name": "APPLICATION_NAME",
             "description": "The name for the application."
