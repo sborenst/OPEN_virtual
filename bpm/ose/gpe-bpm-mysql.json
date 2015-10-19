@@ -130,7 +130,7 @@
                         "containers": [
                             {
                                 "name": "${DATABASE_SERVICE_NAME}",
-                                "image": "redhat-gpe/bpms-mysql:latest",
+                                "image": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms-mysql:latest",
                                 "ports": [
                                     {
                                         "containerPort": 3306,
