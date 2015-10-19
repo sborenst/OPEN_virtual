@@ -271,7 +271,7 @@
         {
             "name": "VOLUME_CAPACITY",
             "description": "Volume space available for data, e.g. 512Mi, 2Gi",
-            "value": "100Mi",
+            "value": "100M",
             "required": true
         }
     ]
