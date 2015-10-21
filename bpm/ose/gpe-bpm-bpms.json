@@ -122,8 +122,7 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "bpms",
-                "namespace": "redhat-gpe"
+                "name": "bpms"
             },
             "spec": {
                 "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms",
@@ -169,8 +168,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "bpms:latest",
-                                "namespace": "redhat-gpe"
+                                "name": "bpms:latest"
                             },
                             "lastTriggeredImage": ""
                         }

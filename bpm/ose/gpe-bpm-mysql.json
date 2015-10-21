@@ -61,8 +61,7 @@
             "kind": "ImageStream",
             "apiVersion": "v1",
             "metadata": {
-                "name": "bpms-mysql",
-                "namespace": "redhat-gpe"
+                "name": "bpms-mysql"
             },
             "spec": {
                 "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms-mysql",
@@ -105,8 +104,7 @@
                             ],
                             "from": {
                                 "kind": "ImageStreamTag",
-                                "name": "bpms-mysql:latest",
-                                "namespace": "redhat-gpe"
+                                "name": "bpms-mysql:latest"
                             },
                             "lastTriggeredImage": ""
                         }
