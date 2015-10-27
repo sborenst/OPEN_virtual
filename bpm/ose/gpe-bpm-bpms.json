@@ -119,31 +119,6 @@
             }
         },
         {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "bpms"
-            },
-            "spec": {
-                "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms",
-                "tags": [
-                    {
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "latest"
-                        },
-                        "name": "6.1.0"
-                    },
-                    {
-                        "name": "latest"
-                    }
-                ]
-            },
-            "status": {
-                "dockerImageRepository": ""
-            }
-        },
-        {
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -159,20 +134,6 @@
                     "resources": {}
                 },
                 "triggers": [
-                    {
-                        "type": "ImageChange",
-                        "imageChangeParams": {
-                            "automatic": true,
-                            "containerNames": [
-                                "${APPLICATION_NAME}"
-                            ],
-                            "from": {
-                                "kind": "ImageStreamTag",
-                                "name": "bpms:latest"
-                            },
-                            "lastTriggeredImage": ""
-                        }
-                    },
                     {
                         "type": "ConfigChange"
                     }
@@ -246,8 +207,7 @@
                         "dnsPolicy": "ClusterFirst"
                     }
                 }
-            },
-            "status": {}
+            }
         }
      ],
     "parameters": [

@@ -9,7 +9,7 @@ ENV HOME=/var/lib/mysql
 EXPOSE 3306
 
 RUN yum -y update && \
-    yum -y --setopt=tsflags=nodocs install mariadb-server gettext && \
+    yum -y --setopt=tsflags=nodocs install mariadb mariadb-server gettext && \
     yum clean all && \
     mkdir -p /var/lib/mysql/data && chown -R mysql.0 /var/lib/mysql
 
@@ -25,6 +25,9 @@ RUN chmod -R g+rwx /var/lib/mysql && \
     chmod 755 /usr/local/bin/run-*.sh
 
 VOLUME ["/var/lib/mysql/data"]
+
+# Allows for mysql command line prompt within running container
+ENV TERM=xterm-256color
 
 USER 27
 

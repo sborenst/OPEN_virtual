@@ -58,31 +58,6 @@
             }
         },
         {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "bpms-mysql"
-            },
-            "spec": {
-                "dockerImageRepository": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/bpms-mysql",
-                "tags": [
-                    {
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "latest"
-                        },
-                        "name": "5.5"
-                    },
-                    {
-                        "name": "latest"
-                    }
-                ]
-            },
-            "status": {
-                "dockerImageRepository": ""
-            }
-        },
-        {
             "kind": "DeploymentConfig",
             "apiVersion": "v1",
             "metadata": {
@@ -95,23 +70,9 @@
                     "resources": {}
                 },
                 "triggers": [
-                    {
-                        "type": "ImageChange",
-                        "imageChangeParams": {
-                            "automatic": true,
-                            "containerNames": [
-                                "${DATABASE_SERVICE_NAME}"
-                            ],
-                            "from": {
-                                "kind": "ImageStreamTag",
-                                "name": "bpms-mysql:latest"
-                            },
-                            "lastTriggeredImage": ""
-                        }
-                    },
-                    {
-                        "type": "ConfigChange"
-                    }
+                  {
+                      "type": "ConfigChange"
+                  }
                 ],
                 "replicas": 1,
                 "selector": {
@@ -143,7 +104,7 @@
                                     }
                                 ],
                                 "terminationMessagePath": "/dev/termination-log",
-                                "imagePullPolicy": "IfNotPresent",
+                                "imagePullPolicy": "Always",
                                 "capabilities": {},
                                 "securityContext": {
                                     "capabilities": {},
@@ -163,8 +124,7 @@
                         "dnsPolicy": "ClusterFirst"
                     }
                 }
-            },
-            "status": {}
+            }
         }
     ],
     "parameters": [

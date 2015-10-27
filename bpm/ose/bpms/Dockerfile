@@ -33,9 +33,3 @@ EXPOSE 9999 8080 9990
 USER 185
 
 CMD ["/opt/open-bpms/config/start-container.sh"]
-
-
-
-
-
-
