@@ -1,10 +1,10 @@
-FROM rhel7
+FROM registry.access.redhat.com/rhel7.1
 MAINTAINER JA Bride
 
 # BUILD PROCEDURE
 # cd $CONTAINER_HOME
-# git clone https://github.com/redhat-gpe/OPEN-docker.git
-# cd $CONTAINER_HOME/OPEN-docker/postgresql
+# git clone https://github.com/redhat-gpe/OPEN_docker.git
+# cd $CONTAINER_HOME/OPEN_docker/jdv/docker/postgresql
 # docker build --rm -t gpe-jdv-pgsql .
 
 # START PROCEDURE

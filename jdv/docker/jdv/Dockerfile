@@ -1,5 +1,4 @@
-#FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk7:latest
-FROM docker-registry.usersys.redhat.com/cloud_enablement/jboss-base-jdk8:41
+FROM redhat-gpe/jboss-base-jdk8
 MAINTAINER JA Bride <jbride@redhat.com>
 
 # BUILD PROCEDURE
@@ -25,7 +24,7 @@ USER root
 RUN yum install -y postgresql-jdbc iproute && yum clean all -y
 
 ENV CONTAINER_CONFIG /opt/OPEN-jdv/config
-ENV JBOSS_HOME /opt/jboss-eap-6.3
+ENV JBOSS_HOME /opt/jboss-eap-6.4
 
 # Expose the following ports:
 # 9999:   EAP management port so as to support creation of a remote server instance in JBDS
@@ -35,11 +34,14 @@ EXPOSE 9999 35432 31000
 
 RUN mkdir -p $CONTAINER_CONFIG
 
-ADD ./config/auto.xml $CONTAINER_CONFIG/auto.xml
-ADD ./downloads/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
+ADD ./resources/jboss-eap-6.4.3-full-build.zip $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip
+RUN unzip $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip -d /opt
 
-RUN java -jar $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar $CONTAINER_CONFIG/auto.xml && \
-    rm $CONTAINER_CONFIG/jboss-dv-installer-6.1.0.redhat-3.jar
+ADD ./resources/jboss-dv-installer-6.2.0.redhat-3.jar $CONTAINER_CONFIG/jboss-dv-installer-6.2.0.redhat-3.jar
+ADD ./config/auto.xml $CONTAINER_CONFIG/auto.xml
+
+RUN java -jar $CONTAINER_CONFIG/jboss-dv-installer-6.2.0.redhat-3.jar $CONTAINER_CONFIG/auto.xml && \
+    rm $CONTAINER_CONFIG/jboss-dv-installer-6.2.0.redhat-3.jar
 
 ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/postgresql-setup.cli $CONTAINER_CONFIG/postgresql-setup.cli
