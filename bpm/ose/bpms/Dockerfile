@@ -28,7 +28,10 @@ RUN chmod -R a+rwx /opt/bpms /opt/open-bpms/
 
 VOLUME ["/opt/open-bpms/data"]
 
-EXPOSE 9999 8080 9990
+EXPOSE 9999 8080 9990 9418 8001
+
+RUN yum install -y git net-tools telnet && \ 
+    yum clean all -y
 
 USER 185
 
