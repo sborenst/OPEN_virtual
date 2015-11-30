@@ -18,7 +18,7 @@ EOSQL
   mysql $mysql_flags jbpm < /sql/quartz_tables_mysql.sql
 
   # TO-DO:  use dashbuilder database
-  mysql $mysql_flags jbpm < /sql/mysql5-dashbuilder-schema.sql
+  mysql $mysql_flags dashbuilder < /sql/mysql5-dashbuilder-schema.sql
 
 }
 

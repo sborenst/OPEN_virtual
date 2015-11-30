@@ -47,8 +47,9 @@ BEGIN
 END
 -- CUSTOM_DELIMITER
 
-// 
--- JA Bride:  added linebreak here to prevent error with mariadb-server on rhel7.1
+//
+-- CUSTOM_DELIMITER
+
 DELIMITER ;
 -- CUSTOM_DELIMITER
 

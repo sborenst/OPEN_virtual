@@ -3,8 +3,8 @@
 set -e
 
 SCRIPTS_DIR=$(dirname $0)
-EAP_DISTRIBUTION_ZIP=jboss-eap-6.4.0.zip
-BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.1.0.GA-deployable-eap6.x.zip
+EAP_DISTRIBUTION_ZIP=jboss-eap-6.4.4-full-build.zip
+BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.2.0.CR1-deployable-eap6.x.zip
 EAP_VERSION=6.4
 
 MAVEN_REPO_DIR=$JBOSS_BPMS_DATA/m2/repository
@@ -66,7 +66,8 @@ sed -i s/org.hibernate.dialect.H2Dialect/org.hibernate.dialect.MySQL5Dialect/ $J
 
 # Configure dashboard
 echo "Configure Dashboard app"
-sed -i s/java:jboss\\/datasources\\/ExampleDS/java:jboss\\/datasources\\/jbpmDS/ $JBOSS_HOME/standalone/deployments/dashbuilder.war/WEB-INF/jboss-web.xml
+sed -i s/java:jboss\\/datasources\\/ExampleDS/java:jboss\\/datasources\\/dashbuilderDS/ $JBOSS_HOME/standalone/deployments/dashbuilder.war/WEB-INF/jboss-web.xml
+sed -i 's/local/java:jboss\/datasources\/jbpmDS/' $JBOSS_HOME/standalone/deployments/dashbuilder.war/WEB-INF/deployments/jbpmKPIs_v2.kpis
 
 # Set permissions
 chmod 0755 $JBOSS_HOME

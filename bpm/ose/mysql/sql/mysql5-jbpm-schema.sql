@@ -28,6 +28,7 @@
         processSessionId bigint not null,
         status varchar(255),
         taskId bigint,
+        workItemId bigint,
         primary key (id)
     );
 
@@ -242,6 +243,7 @@
         parentProcessInstanceId bigint,
         processId varchar(255),
         processInstanceDescription varchar(255),
+        correlationKey varchar(255),
         processInstanceId bigint not null,
         processName varchar(255),
         processVersion varchar(255),
@@ -340,6 +342,7 @@
         taskId bigint,
         type varchar(255),
         userId varchar(255),
+        message varchar(255),
         OPTLOCK integer,
         workItemId bigint,
         primary key (id)
@@ -749,3 +752,4 @@
     create index IDX_PInstLog_pVersion on ProcessInstanceLog(processVersion);
     create index IDX_PInstLog_start_date on ProcessInstanceLog(start_date);
     create index IDX_PInstLog_status on ProcessInstanceLog(status);
+    create index IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey);
