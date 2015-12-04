@@ -1,0 +1,236 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "gpe-bpm-biz-logic-dev-template",
+        "creationTimestamp": null,
+        "annotations": {
+            "description": "Environment for the OPEN BPMS Developer course labs",
+            "tags": "OPEN, bpm, bpms"
+        }
+    },
+    "labels": {
+        "template": "gpe-bpm-biz-logic-dev-template"
+    },
+    "objects": [
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The BPMS web server's http port."
+                }            
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 8080,
+                        "targetPort": 8080
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                }
+            }            
+        },
+        {
+            "kind": "Service",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-mgmt",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "The BPMS web server's http management port."
+                }            
+            },
+            "spec": {
+                "ports": [
+                    {
+                        "port": 9990,
+                        "targetPort": 9990
+                    }
+                ],
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                }
+            }            
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-http",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-http",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for bpms http service."
+                }
+            },
+            "spec": {
+                "kind": "Service", 
+                "to": {
+                    "name": "${APPLICATION_NAME}"
+                }
+            }
+        },
+        {
+            "kind": "Route",
+            "apiVersion": "v1",
+            "id": "${APPLICATION_NAME}-mgmt",
+            "metadata": {
+                "name": "${APPLICATION_NAME}-mgmt",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "annotations": {
+                    "description": "Route for bpms management service."
+                }
+            },
+            "spec": {
+                "kind": "Service", 
+                "to": {
+                    "name": "${APPLICATION_NAME}-mgmt"
+                }
+            }
+        }, 
+        {
+            "kind": "PersistentVolumeClaim",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}"
+            },
+            "spec": {
+                "accessModes": [
+                    "ReadWriteMany"
+                ],
+                "resources": {
+                    "requests": {
+                        "storage": "${VOLUME_CAPACITY}"
+                    }
+                }
+            }
+        },
+        {
+            "kind": "DeploymentConfig",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "application": "${APPLICATION_NAME}"
+                },
+                "creationTimestamp": null
+            },
+            "spec": {
+                "strategy": {
+                    "type": "Recreate",
+                    "resources": {}
+                },
+                "triggers": [
+                    {
+                        "type": "ConfigChange"
+                    }
+                ],
+                "replicas": 1,
+                "selector": {
+                    "deploymentConfig": "${APPLICATION_NAME}"
+                },
+                "template": {
+                    "metadata": {
+                        "name": "${APPLICATION_NAME}",
+                        "creationTimestamp": null,
+                        "labels": {
+                            "deploymentConfig": "${APPLICATION_NAME}",
+                            "application": "${APPLICATION_NAME}" 
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${REDHAT_GPTE_DOCKER_REG_URL}/redhat-gpe/biz_logic_dev:latest",
+                                "ports": [
+                                    {
+                                        "name": "http",
+                                        "containerPort": 8080,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "mgmt",
+                                        "containerPort": 9990,
+                                        "protocol": "TCP"
+                                    },
+                                    {
+                                        "name": "cli",
+                                        "containerPort": 9999,
+                                        "protocol": "TCP"
+                                    }
+                                ],
+                                "env": [
+                                    {
+                                        "name": "DATABASE_SERVICE_NAME",
+                                        "value": "${DATABASE_SERVICE_NAME}"
+                                    }
+                                ],
+                                "resources": {},
+                                "volumeMounts": [
+                                    {
+                                        "name": "${APPLICATION_NAME}-data",
+                                        "mountPath": "/opt/open-bpms/data"
+                                    }
+                                ],
+                                "terminationMessagePath": "/dev/termination-log",
+                                "imagePullPolicy": "IfNotPresent",
+                                "capabilities": {},
+                                "securityContext": {
+                                    "capabilities": {},
+                                    "privileged": false
+                                }
+                            }
+                        ],
+                        "volumes": [
+                            {
+                                "name": "${APPLICATION_NAME}-data",
+                                "persistentVolumeClaim": {
+                                    "claimName": "${APPLICATION_NAME}"
+                                }
+                            }
+                        ],
+                        "restartPolicy": "Always",
+                        "dnsPolicy": "ClusterFirst"
+                    }
+                }
+            }
+        }
+     ],
+    "parameters": [
+        {
+            "name": "REDHAT_GPTE_DOCKER_REG_URL",
+            "description": "URL of partner accessible Red Hat GPTE Docker Registry",
+            "value": "infranode00-mwl.localdomain:5000",
+            "required": true
+        },
+        {
+            "name": "APPLICATION_NAME",
+            "description": "The name for the application."
+        },
+        {
+            "name": "DATABASE_SERVICE_NAME",
+            "description": "Database service name",
+            "required": true
+        },
+        {
+            "name": "VOLUME_CAPACITY",
+            "description": "Volume space available for data, e.g. 512Mi, 2Gi",
+            "value": "100M",
+            "required": true
+        }
+    ]
+}
