@@ -3,6 +3,7 @@ FROM centos:7
 # docker build --rm=true -t redhat-gpe/bpms-mysql .
 # docker tag -f redhat-gpe/bpms-mysql infranode00-mwl.localdomain:5000/redhat-gpe/bpms-mysql
 # docker push infranode00-mwl.localdomain:5000/redhat-gpe/bpms-mysql
+# docker run -d --name="gpe-bpm-mysql" redhat-gpe/bpms-mysql
 
 ENV HOME=/var/lib/mysql
 

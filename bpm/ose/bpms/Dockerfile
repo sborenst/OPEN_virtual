@@ -1,6 +1,7 @@
 # docker build --rm=true -t redhat-gpe/bpms .
 # docker tag -f redhat-gpe/bpms infranode00-mwl.localdomain:5000/redhat-gpe/bpms
 # docker push infranode00-mwl.localdomain:5000/redhat-gpe/bpms
+# docker run -d --name="gpe-bpm-bpms" --link=gpe-bpm-mysql:mysql redhat-gpe/bpms
 
 FROM redhat-gpe/jboss-base-jdk8:latest
 
@@ -14,7 +15,7 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND="true" \
     JBOSS_BPMS_DATA="/opt/open-bpms/data" \
     JBOSS_BPMS_CONFIG="/opt/open-bpms/config"
 
-RUN yum install -y mysql-connector-java iproute && \ 
+RUN yum install -y mysql-connector-java iproute git net-tools telnet && \ 
     yum clean all -y
 
 ADD ./resources scripts /scripts/
@@ -29,9 +30,6 @@ RUN chmod -R a+rwx /opt/bpms /opt/open-bpms/
 VOLUME ["/opt/open-bpms/data"]
 
 EXPOSE 9999 8080 9990 9418 8001
-
-RUN yum install -y git net-tools telnet && \ 
-    yum clean all -y
 
 USER 185
 

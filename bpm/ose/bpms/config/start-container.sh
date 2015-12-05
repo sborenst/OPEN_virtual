@@ -27,7 +27,7 @@ else
 
     // Possible that this container may be used in a non OSE environment and linked to a database as follows:  --link=gpe-bpm-mysql:mysql 
     if [  "x$MYSQL_PORT_3306_TCP_ADDR" != "x" ]; then
-        MYSQL_ARGUMENTS=" -Dmysql.host.ip=$MYSQL_PORT_3306_TCP_ADDR -Dmysql.host.port=3306
+        MYSQL_ARGUMENTS=" -Dmysql.host.ip=$MYSQL_PORT_3306_TCP_ADDR -Dmysql.host.port=3306"
     else
         echo -en "MYSQL_HOST_PORT_3306_TCP_ADDR not set !\n" >> $START_LOG_FILE
     fi
