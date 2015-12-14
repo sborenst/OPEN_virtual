@@ -1,6 +1,9 @@
 #!/bin/sh
 
-DOCKER_IP=$(ip addr show eth0 | grep -E '^\s*inet' | grep -m1 global | awk '{ print $2 }' | sed 's|/.*||')
+# Binding to docker ip appears to cause problems when attempting to port-forward to embedded git and ssh protocols exposed by business-central
+# Will instead bind to 0.0.0.0
+# DOCKER_IP=$(ip addr show eth0 | grep -E '^\s*inet' | grep -m1 global | awk '{ print $2 }' | sed 's|/.*||')
+DOCKER_IP=0.0.0.0
 
 START_LOG_FILE=/tmp/start-container.log
 
