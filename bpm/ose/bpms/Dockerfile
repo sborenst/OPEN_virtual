@@ -10,7 +10,7 @@ USER root
 ENV LAUNCH_JBOSS_IN_BACKGROUND="true" \
     JBOSS_PRODUCT="bpms" \
     JBOSS_EAP_VERSION="6.4.4" \
-    JBOSS_BPMS_VERSION="6.2.0.CR1" \
+    JBOSS_BPMS_VERSION="6.2.0.GA" \
     JBOSS_HOME="/opt/bpms" \
     JBOSS_BPMS_DATA="/opt/open-bpms/data" \
     JBOSS_BPMS_CONFIG="/opt/open-bpms/config"

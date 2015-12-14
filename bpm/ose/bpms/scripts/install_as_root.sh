@@ -4,7 +4,7 @@ set -e
 
 SCRIPTS_DIR=$(dirname $0)
 EAP_DISTRIBUTION_ZIP=jboss-eap-6.4.4-full-build.zip
-BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.2.0.CR1-deployable-eap6.x.zip
+BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.2.0.GA-deployable-eap6.x.zip
 EAP_VERSION=6.4
 
 MAVEN_REPO_DIR=$JBOSS_BPMS_DATA/m2/repository
