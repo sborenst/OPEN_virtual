@@ -22,8 +22,8 @@ RUN yum install -y postgresql-jdbc postgresql-jdbc mysql-connector-java iproute 
 ENV JBOSS_CONFIG standalone.xml
 ENV JBOSS_NAME jboss-eap-6.4
 ENV START_LOG_FILE=/tmp/start-eap.log
-ENV JDG_MODULES_NAME=jboss-datagrid-6.5.0-eap-modules-library
-ENV JDG_MODULES_ZIP=jboss-datagrid-6.5.0.Beta-eap-modules-library.zip
+ENV JDG_MODULES_NAME=jboss-datagrid-6.5.1-eap-modules-library
+ENV JDG_MODULES_ZIP=jboss-datagrid-6.5.1-eap-modules-library.zip
 ENV JDG_MODULES_ZIP_PATH=/resources/$JDG_MODULES_ZIP
 
 ######  Layer JDG modules on EAP ####

@@ -33,10 +33,10 @@ EXPOSE 8080 9990 9999 11222 11211
 
 RUN mkdir -p $CONTAINER_CONFIG
 
-ADD ./resources/jboss-datagrid-6.5.0.Beta-server.zip $CONTAINER_CONFIG/jboss-datagrid-6.5.0.Beta-server.zip
+ADD ./resources/jboss-datagrid-6.5.1-server.zip $CONTAINER_CONFIG/jboss-datagrid-6.5.1-server.zip
 
-RUN unzip $CONTAINER_CONFIG/jboss-datagrid-6.5.0.Beta-server.zip -d /opt && \
-    rm $CONTAINER_CONFIG/jboss-datagrid-6.5.0.Beta-server.zip
+RUN unzip $CONTAINER_CONFIG/jboss-datagrid-6.5.1-server.zip -d /opt && \
+    rm $CONTAINER_CONFIG/jboss-datagrid-6.5.1-server.zip
 
 ADD ./config/start-container.sh $CONTAINER_CONFIG/start-container.sh
 ADD ./config/mgmt-users.properties $JBOSS_HOME/standalone/configuration/mgmt-users.properties
