@@ -10,6 +10,7 @@ EAP_VERSION=6.4
 MAVEN_REPO_DIR=$JBOSS_BPMS_DATA/m2/repository
 
 QUARTZ_PROPERTIES=$JBOSS_BPMS_CONFIG/quartz.properties
+ERRAI_PROPERTIES=$JBOSS_BPMS_CONFIG/ErraiService.properties
 
 MYSQL_DRIVER_JAR=mysql-connector-java.jar
 MYSQL_DRIVER_JAR_DIR=/usr/share/java
@@ -58,6 +59,10 @@ echo "admin=c22052286cd5d72239a90fe193737253" >> $JBOSS_HOME/standalone/configur
 # Quartz Properties
 echo "Copy quartz properties file"
 cp $QUARTZ_PROPERTIES $JBOSS_HOME/standalone/configuration
+
+# Errai properties
+echo "Copy Errai properties file"
+cp $ERRAI_PROPERTIES $JBOSS_HOME/standalone/deployments/business-central.war/WEB-INF/classes
 
 # Modify persistence.xml
 echo "Modify persistence.xml"
