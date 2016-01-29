@@ -2,6 +2,8 @@
 
 OUTPUT=/tmp/run.log
 
+echo -en "run.sh starting .... `date`" > /tmp/run.log
+
 function obfuscate_password {
     local password="$1"
     local acegi_security_path=`find /tmp/war/WEB-INF/lib/ -name acegi-security-*.jar`
@@ -14,8 +16,11 @@ function obfuscate_password {
 mkdir /tmp/war
 unzip -q /usr/lib/jenkins/jenkins.war -d /tmp/war
 new_password_hash=`obfuscate_password ${JENKINS_PASSWORD:-password}`
+echo -en "\nJENKINS PASSWORD = ${JENKINS_PASSWORD:-password} : new_password_hash = $new_password_hash" >> /tmp/run.log
 
 if [ ! -e /var/lib/jenkins/configured ]; then
+  echo -en "\n/var/lib/jenkins/configured does not exist" >> /tmp/run.log
+
   cp -r /opt/openshift/configuration/* /var/lib/jenkins
   cp -r /opt/openshift/configuration/.m2 /var/lib/jenkins
   rm -rf /opt/openshift/configuration/*
@@ -27,6 +32,8 @@ if [ ! -e /var/lib/jenkins/configured ]; then
 fi
 
 if [ -e /var/lib/jenkins/password ]; then
+  echo -en "\n/var/lib/jenkins/password exists" >> /tmp/run.log
+
   # if the password environment variable has changed, update the jenkins config.
   # we don't want to just blindly do this on startup because the user might change their password via
   # the jenkins ui, so we only want to do this if the env variable has been explicitly modified from
