@@ -14,23 +14,23 @@
         <hudson.model.TextParameterDefinition>
           <name>AUTH_TOKEN</name>
           <description>
-          Authentication token of an account/serviceaccount for accessing the project to run builds and tag images.
-          Jenkins OSE template comes pre-configured with the default serviceaccount.
-          Because this Jenkins container is being managed by OSE3, the use of this default serviceaccount is all that is needed for the oc utility to authenticate with the OSE master API.
-          Subsequently, this field can be left blank.
+Authentication token of an account/serviceaccount for accessing the project to run builds and tag images.
+Jenkins OSE template comes pre-configured with the default serviceaccount.
+Because this Jenkins container is being managed by OSE3, the use of this default serviceaccount is all that is needed for the oc utility to authenticate with the OSE master API.
+Subsequently, this field can be left blank.
           </description>
           <defaultValue></defaultValue>
         </hudson.model.TextParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>PROJECT</name>
           <description>The OpenShift project this job will access</description>
-          <defaultValue>devops</defaultValue>
+          <defaultValue>rh-jbride-redhat-com-devops-using-ose</defaultValue>
         </hudson.model.StringParameterDefinition>
         <hudson.model.StringParameterDefinition>
           <name>BUILD_CONFIG</name>
           <description>
-            The name of the BuildConfig to trigger.
-            Corresponds to BuildConfig object that includes the DISABLE_ASSET_COMPILATION and APPLICATION_ARTIFACT_URL environment variables.
+The name of the BuildConfig to trigger.
+Corresponds to BuildConfig object that includes the DISABLE_ASSET_COMPILATION and APPLICATION_ARTIFACT_URL environment variables.
           </description>
           <defaultValue>bookstore-jenkins</defaultValue>
         </hudson.model.StringParameterDefinition>

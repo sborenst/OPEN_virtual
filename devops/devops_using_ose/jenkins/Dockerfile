@@ -3,8 +3,6 @@ FROM centos:centos7
 # JA Bride
 # sudo docker build --rm=true -t rhtgptetraining/jenkins-ose-dev .
 # sudo docker run -i -t rhtgptetraining/jenkins-ose-dev
-# sudo docker tag -f rhtgptetraining/jenkins-ose-dev docker.io/rhtgptetraining/jenkins-ose-dev
-# sudo docker push docker.io/rhtgptetraining/jenkins-ose-dev
 # sudo docker tag -f rhtgptetraining/jenkins-ose-dev infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
 # sudo docker push infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
 
@@ -20,7 +18,7 @@ FROM centos:centos7
 
 MAINTAINER Ben Parees <bparees@redhat.com>
 
-ENV JENKINS_VERSION=1.6 \
+ENV JENKINS_VERSION=1.646 \
     HOME=/var/lib/jenkins \
     JENKINS_HOME=/var/lib/jenkins
 
@@ -37,7 +35,7 @@ RUN mkdir -p /opt/openshift/configuration/plugins
 
 RUN curl http://pkg.jenkins-ci.org/redhat/jenkins.repo -o /etc/yum.repos.d/jenkins.repo && \
     rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-    yum install -y tar zip unzip java-1.8.0-openjdk-devel jenkins-1.609 git && \
+    yum install -y tar zip unzip java-1.8.0-openjdk-devel jenkins-$JENKINS_VERSION git && \
     yum clean all  && \
     chmod og+rw /var/lib/jenkins
 
@@ -79,6 +77,28 @@ COPY ./contrib/ /opt/openshift
 RUN  chmod -R og+rw /opt/openshift
 
 VOLUME ["/var/lib/jenkins"]
+
+RUN yum install -y which && \
+    yum clean all
+
+# Adding cloudbees pipeline plugin: https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Plugin
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-step-api.hpi           http://updates.jenkins-ci.org/latest/workflow-step-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/mapdb-api.hpi                   http://updates.jenkins-ci.org/latest/mapdb-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-scm-step.hpi           http://updates.jenkins-ci.org/latest/workflow-scm-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/durable-task.hpi                http://updates.jenkins-ci.org/latest/durable-task.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-durable-task-step.hpi  http://updates.jenkins-ci.org/latest/workflow-durable-task-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/ace-editor.hpi                  http://updates.jenkins-ci.org/latest/ace-editor.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/jquery-detached.hpi             http://updates.jenkins-ci.org/latest/jquery-detached.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/script-security.hpi             http://updates.jenkins-ci.org/latest/script-security.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-api.hpi                http://updates.jenkins-ci.org/latest/workflow-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-support.hpi            http://updates.jenkins-ci.org/latest/workflow-support.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-cps.hpi                http://updates.jenkins-ci.org/latest/workflow-cps.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/git-server.hpi                  http://updates.jenkins-ci.org/latest/git-server.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-cps-global-lib.hpi     http://updates.jenkins-ci.org/latest/workflow-cps-global-lib.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-job.hpi                http://updates.jenkins-ci.org/latest/workflow-job.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                      http://updates.jenkins-ci.org/latest/mailer.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-basic-steps.hpi        http://updates.jenkins-ci.org/latest/workflow-basic-steps.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-aggregator.hpi         http://updates.jenkins-ci.org/latest/workflow-aggregator.hpi
 
 # JA Bride
 # Modifying to jenkins because otherwise end up wth the following error when attempting to execute git:
