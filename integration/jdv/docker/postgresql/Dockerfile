@@ -17,12 +17,12 @@ MAINTAINER JA Bride
 # 	psql -U postgres -h docker1.ose.opentlc.com -p 6432 postgres
 #       \l   
 
-RUN yum -y update; yum clean all
-
 # Install postgresql deps
 RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm
 RUN rpm -Uvh http://yum.postgresql.org/9.3/redhat/rhel-7-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
-RUN yum install -y procps-ng postgresql93 postgresql93-contrib postgresql93-server libxslt hostname && yum clean all -y
+RUN yum -y update && \
+    yum -y --setopt=tsflags=nodocs install procps-ng postgresql93 postgresql93-contrib postgresql93-server libxslt hostname && \
+    yum clean all
 
 #
 # set up cluster directory

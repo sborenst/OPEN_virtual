@@ -35,7 +35,8 @@ EXPOSE 9999 35432 31000
 RUN mkdir -p $CONTAINER_CONFIG
 
 ADD ./resources/jboss-eap-6.4.3-full-build.zip $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip
-RUN unzip $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip -d /opt
+RUN unzip $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip -d /opt && \
+    rm $CONTAINER_CONFIG/jboss-eap-6.4.3-full-build.zip
 
 ADD ./resources/jboss-dv-installer-6.2.0.redhat-3.jar $CONTAINER_CONFIG/jboss-dv-installer-6.2.0.redhat-3.jar
 ADD ./config/auto.xml $CONTAINER_CONFIG/auto.xml

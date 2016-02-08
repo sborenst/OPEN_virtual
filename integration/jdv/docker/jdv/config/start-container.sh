@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JBOSS_HOME=/opt/jboss-eap-6.3/
+JBOSS_HOME=/opt/jboss-eap-6.4/
 CONTAINER_CONFIG=/opt/OPEN-jdv/config
 START_LOG_FILE=/tmp/start-jdv.log
 
