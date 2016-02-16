@@ -100,6 +100,9 @@ RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                  
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-basic-steps.hpi        http://updates.jenkins-ci.org/latest/workflow-basic-steps.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-aggregator.hpi         http://updates.jenkins-ci.org/latest/workflow-aggregator.hpi
 
+# checkPort.sh supports groovy based pipeline job
+COPY ./checkPort.sh /usr/local/bin/checkPort.sh
+
 # JA Bride
 # Modifying to jenkins because otherwise end up wth the following error when attempting to execute git:
 #   fatal: unable to look up current user in the passwd file: no such user
