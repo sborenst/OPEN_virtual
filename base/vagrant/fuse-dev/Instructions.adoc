@@ -72,20 +72,20 @@ vagrant up
 
 * Within the vagrant project folder
 
-[source]
-----
-vagrant ssh
-----
+	[source]
+	----
+	vagrant ssh
+	----
 
 * Everywhere
 
 If the image (ova file) has been imported within VirtualBox, then you can start the VM machine and issue a ssh session
 
-[source]
-----
-VBoxManage startvm "dev-fuse-vm" --type headless
-echo vagrant | ssh vagrant@localhost -p 2222
-----
+	[source]
+	----
+	VBoxManage startvm "dev-fuse-vm" --type headless
+	echo vagrant | ssh vagrant@localhost -p 2222
+	----
 
 * Start vboxnet0 adpater 
 
