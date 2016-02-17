@@ -61,6 +61,11 @@ Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /bin/sed -r -e * d -ibak /etc/exports
 %sudo ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD_CHECK, VAGRANT_NFSD_START, VAGRANT_NFSD_APPLY, VAGRANT_EXPORTS_REMOVE
 ----
 
+## Download & install JBoss Fuse 6.2.1 GA release
+
+* Download the full size zip of https://developers.redhat.com/download-manager/file/jboss-fuse-6.2.1.GA-full_zip.zip[JBoss Fuse 6.2.1 GA Release]
+* Install the file within the `tmp` folder
+
 ## Build the VM image
 
 [source]
