@@ -9,14 +9,7 @@
 ** https://download.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-libvirt.box[Libvirt]
 ** https://download.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box[Virtualbox]
 
-* Install vagrant guest addon
-
-[source]
-----
-vagrant plugin install vagrant-vbguest
-----	
-
-* Download Fedora cloud image (libvirt, virtualbox) and install them
+* Install Vagrant boxes
 
 [source]
 ----
@@ -24,12 +17,26 @@ vagrant box add Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-libvirt.box
 vagrant box add images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box --name=fedora23-virtualbox
 ----
 
+* Install vagrant guest addon
+
+As the Fedora Vagrant box doesn't include the VirtualBox Guest Additions, we will use the vagrant vbguest plugin to install it during the creation of the VM. 
+
+NOTE: Alternatively, you could also add it usign these instructions - https://gist.github.com/fernandoaleman/5083680
+
+[source]
+----
+vagrant plugin install vagrant-vbguest
+----	
+
 * Configure the Host machine to support NFS
 
-See this article http://askubuntu.com/questions/412525/vagrant-up-and-annoying-nfs-password-asking for more info
+For performances reason, we will use NFS between the Host and Guest machine to copy the VirtualBox Guest extensions iso file, JBoss Fuse or any other files. To automate the procedure and avoid that Vagra,t requests to the host to provide the admin password, the following lines will be added to the sudoers file of the host.
 
-Edit the `/etc/sudoers` file using the cmd tool `sudo visudo`
+NOTE : See this article for http://askubuntu.com/questions/412525/vagrant-up-and-annoying-nfs-password-asking[more info].
 
+Edit the `/etc/sudoers` file using the cmd tool `sudo visudo` and copy/paste these lines
+
+.MacOS
 [source]
 ----
 As of version 1.7.3, the sudoers file in OS X should have these entries: 
@@ -39,8 +46,7 @@ Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /usr/bin/sed -E -e /*/ d -ibak /etc/exports
 %admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
 ----
 
-And Linux will have these entries:
-
+.Linux
 [source]
 ----
 Cmnd_Alias VAGRANT_EXPORTS_ADD = /usr/bin/tee -a /etc/exports
