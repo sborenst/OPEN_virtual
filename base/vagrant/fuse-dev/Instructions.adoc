@@ -79,7 +79,7 @@ vagrant ssh
 
 * Everywhere
 
-If the image (ova file) has been imported, then you can start the VM machine and issue a ssh session
+If the image (ova file) has been imported within VirtualBox, then you can start the VM machine and issue a ssh session
 
 [source]
 ----
