@@ -72,24 +72,27 @@ vagrant up
 
 * Within the vagrant project folder
 
-	[source]
-	----
-	vagrant ssh
-	----
+[source]
+----
+vagrant ssh
+----
 
 * Everywhere
 
 If the image (ova file) has been imported within VirtualBox, then you can start the VM machine and issue a ssh session
 
-	[source]
-	----
-	VBoxManage startvm "dev-fuse-vm" --type headless
-	echo vagrant | ssh vagrant@localhost -p 2222
-	----
+[source]
+----
+VBoxManage startvm "dev-fuse-vm" --type headless
+echo vagrant | ssh vagrant@localhost -p 2222
+----
 
 * Start vboxnet0 adpater 
 
-	sudo ifdown vboxnet0 && sudo ifup vboxnet0
+[source]
+----
+sudo ifdown vboxnet0 && sudo ifup vboxnet0
+----
 
 ## Test JBoss Fuse
 
@@ -146,15 +149,24 @@ Request timeout for icmp_seq 0
 
 * Start a virtual machine
 
-	VBoxManage startvm "dev-fuse-vm" --type headless
+[source]
+----
+VBoxManage startvm "dev-fuse-vm" --type headless
+----
 
 * Check the status of the virtual machine
 
-	VBoxManage showvminfo "dev-fuse-vm"
+[source]
+----
+VBoxManage showvminfo "dev-fuse-vm"
+----
 
 * List the Virtual Machines
 
-	VBoxManage list vms
+[source]
+----
+VBoxManage list vms
+----
 
 
 
