@@ -111,6 +111,7 @@ COPY ./oc_build_deploy.sh /usr/local/bin/oc_build_deploy.sh
 # Change runAsUser -> type: RunAsAny
 #USER 1001
 RUN chown -R jenkins:jenkins /var/lib/jenkins/
+RUN chown -R jenkins:jenkins /usr/local/bin/
 USER jenkins
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
