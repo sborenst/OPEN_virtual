@@ -34,9 +34,9 @@ vagrant plugin install vagrant-vbguest
 
 * Configure the Host machine to support NFS
 
-For performances reason, we will use NFS between the Host and Guest machine to copy the VirtualBox Guest extensions iso file, JBoss Fuse or any other files. To automate the procedure and avoid that Vagra,t requests to the host to provide the admin password, the following lines will be added to the sudoers file of the host.
+For performances reason, we will use NFS between the Host and Guest machine to copy the VirtualBox Guest extensions iso file, JBoss Fuse or any other files. To automate the procedure and avoid that Vagrant requests to the host to provide the admin password during the `vagrant up` process, the following lines must be added to the sudoers file of the host.
 
-NOTE : See this article for http://askubuntu.com/questions/412525/vagrant-up-and-annoying-nfs-password-asking[more info].
+NOTE: See this article for http://askubuntu.com/questions/412525/vagrant-up-and-annoying-nfs-password-asking[more info].
 
 Edit the `/etc/sudoers` file using the cmd tool `sudo visudo` and copy/paste these lines
 
