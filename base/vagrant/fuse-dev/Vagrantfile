@@ -94,9 +94,15 @@ SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
-  config.vm.box = "fedora23-virtualbox"
-
   config.vm.hostname = $hostname
+
+  config.vm.define "libvirt" do |cfg|
+    cfg.vm.box = "fedora23-libvirt"
+  end
+
+  config.vm.define "virtualbox" do |cfg|
+    cfg.vm.box = "fedora23-virtualbox"
+  end
 
   # Use NFS for shared folders for better performance
   config.vm.synced_folder "tmp/", "/home/vagrant/tmp", nfs: true
@@ -119,8 +125,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider :libvirt do |v, override|
     v.memory = $vmMemory
+    v.driver = "qemu"
     v.cpus = 2
-    v.name = "dev-fuse-vm"
+    #v.name = "dev-fuse-vm"
   end
 
   config.vm.provision "shell", inline: $provisionScript, keep_color: true
