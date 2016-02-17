@@ -2,7 +2,9 @@
 
 ## Prerequisites
 
-* Download and install https://www.vagrantup.com/downloads.html[Vagrant]
+* Download and install https://www.vagrantup.com/downloads.html[Vagrant >= 1.7]
+
+* Download and install https://www.virtualbox.org/wiki/Downloads[VirtualBox >= 5]
 
 * Download https://getfedora.org/cloud/download/[Fedora Cloud images]
 
