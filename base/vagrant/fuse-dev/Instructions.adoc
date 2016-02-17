@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-WARNING : Vagrant and Fedora cloud images are only required if you plan to build the Virtual Image using Vagrant. Otherwise, you can directly import the ova image within VirtualBox.
+WARNING: Vagrant and Fedora cloud images are only required if you plan to build the Virtual Image using Vagrant. Otherwise, you can directly import the ova image within VirtualBox.
 
 * Download and install https://www.vagrantup.com/downloads.html[Vagrant >= 1.7]
 
