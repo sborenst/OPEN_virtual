@@ -25,7 +25,7 @@ vagrant box add images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virt
 
 As the Fedora Vagrant box doesn't include the VirtualBox Guest Additions, we will use the vagrant vbguest plugin to install it during the creation of the VM. 
 
-NOTE: Alternatively, you could also add it usign these instructions - https://gist.github.com/fernandoaleman/5083680
+NOTE: Alternatively, you could also add it using these instructions - https://gist.github.com/fernandoaleman/5083680
 
 [source]
 ----
