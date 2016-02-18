@@ -1,0 +1,13 @@
+<network connections='1' ipv6='yes'>
+  <name>private</name>
+  <uuid>dc59ead7-c22c-460d-a09b-2c44b47e9b51</uuid>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:88:10:6d'/>
+  <ip address='172.28.128.1' netmask='255.255.255.0'>
+    <dhcp>
+      <host mac='52:54:00:88:10:6d' name='fuse-dev' ip='172.28.128.4'/>
+      <range start='172.28.128.1' end='172.28.128.254'/>
+    </dhcp>
+  </ip>
+</network>
+

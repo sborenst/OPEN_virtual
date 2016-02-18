@@ -77,14 +77,14 @@ sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084/etc/user
 
 # Start JBoss Fuse
 echo "Start JBoss Fuse"
-su vagrant -c ./jboss-fuse-6.2.1.redhat-084/bin/start
+su vagrant -c './jboss-fuse-6.2.1.redhat-084/bin/start'
 popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
-su vagrant -c mkdir -p /home/vagrant/demo
+su vagrant -c 'mkdir -p /home/vagrant/demo'
 pushd /home/vagrant/demo
-su vagrant -c git clone https://github.com/FuseByExample/rest-dsl-in-action.git
+su vagrant -c 'git clone https://github.com/FuseByExample/rest-dsl-in-action.git'
 cd rest-dsl-in-action
 mvn clean install
 popd
@@ -98,14 +98,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "libvirt" do |cfg|
     cfg.vm.box = "fedora23-libvirt"
-    cfg.vm.network :public_network,
-      :dev => "virbr0",
-      :mode => "bridge",
-      :type => "bridge"
-    cfg.vm.network :private_network,
-      :ip => "172.28.128.4",
-      :libvirt__network_name => "private",
-      :libvirt__forward_mode => "none"
+    cfg.vm.network :private_network, 
+        :ip => "172.28.128.4",
+        :libvirt__network_name => "private"
+        
+    #cfg.vm.network :public_network,
+    #  :dev => "virbr0",
+    #  :mode => "bridge",
+    #  :type => "bridge"
   end
 
   config.vm.define "virtualbox" do |cfg|
@@ -137,7 +137,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.volume_cache = "unsafe"
     v.machine_virtual_size = 45
     v.management_network_name = "default"
-    #v.random_hostname = "true"
   end
 
   config.vm.provision "shell", inline: $provisionScript, keep_color: true
