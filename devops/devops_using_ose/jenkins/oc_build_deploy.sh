@@ -1,13 +1,5 @@
 #!/bin/bash
 
-
-echo "Total number of arguments: $#"
-echo "Argument 1: $1"
-echo "Argument 2: $2"
-echo "Argument 3: $3"
-echo "Argument 4: $4"
-echo "Argument 5: $5"
-
 if [ -z "$1" ]; then
     OPENSHIFT_API_URL=https://master00-mwl.opentlc.com:8443
 else
@@ -23,34 +15,29 @@ if [ -z "$3" ]; then
 else
     BUILD_CONFIG=$3
 fi
+if [ -z "$4" ]; then
+    CLIENT_LOGGING=0
+else
+    CLIENT_LOGGING=$4
+fi
 AUTH_TOKEN=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`
 
-echo -en "oc_build_deploy.sh:  arguments:\n\tOPENSHIFT_API_URL = $OPENSHIFT_API_URL\n\tPROJECT = $PROJECT\n\tBUILD_CONFIG = $BUILD_CONFIG\n\tAUTH_TOKEN = $AUTH_TOKEN\n"
+echo -en "oc_build_deploy.sh:  arguments:\n\tOPENSHIFT_API_URL = $OPENSHIFT_API_URL\n\tPROJECT = $PROJECT\n\tBUILD_CONFIG = $BUILD_CONFIG\n\tAUTH_TOKEN = $AUTH_TOKEN\n\tCLIENT_LOGGING=$CLIENT_LOGGING"
 
-subcommand="-n $PROJECT --token=$AUTH_TOKEN --server=$OPENSHIFT_API_URL --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt --v=10"
+subcommand="-n $PROJECT --token=$AUTH_TOKEN --server=$OPENSHIFT_API_URL --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt --v=$CLIENT_LOGGING"
 
-# 2)  Kick off build
-echo "Triggering new application build and deployment:"
+# 1)  Kick off build
+buildCommand="oc $subcommand start-build ${BUILD_CONFIG}"
+echo -en "\nTriggering new application build using the following command:\n$buildCommand\n"
 BUILD_ID=`oc $subcommand start-build ${BUILD_CONFIG}`
 if [ $? != 0 ];
 then
     exit 1;
 fi
 
-# 3) Stream the logs for the build that just started
-rc=1
-count=0
-attempts=3
-set +e
-while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  oc $subcommand build-logs $BUILD_ID
-  rc=$?
-  count=$(($count+1))
-done
-set -e
-
-# 4)  Check that build has succeeded
-echo "Checking build result status"
+# 2)  Check that build has succeeded
+checkCommand="oc $subcommand get build ${BUILD_ID} -t '{{.status.phase}}'"
+echo -en "\nChecking build result status using the following command:\n$checkCommand\n"
 rc=1
 count=0
 attempts=50
