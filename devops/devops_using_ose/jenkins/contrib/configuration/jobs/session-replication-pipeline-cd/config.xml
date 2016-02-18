@@ -3,7 +3,32 @@
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
-  <properties/>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>OPENSHIFT_API_URL</name>
+          <description>URL of the OpenShift api endpoint.</description>
+          <defaultValue>https://master00-mwl.opentlc.com:8443</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.TextParameterDefinition>
+          <name>AUTH_TOKEN</name>
+          <description>
+Authentication token of an account/serviceaccount for accessing the project to run builds and tag images.
+Jenkins OSE template comes pre-configured with the default serviceaccount.
+Because this Jenkins container is being managed by OSE3, the use of this default serviceaccount is all that is needed for the oc utility to authenticate with the OSE master API.
+Subsequently, this field can be left blank.
+          </description>
+          <defaultValue></defaultValue>
+        </hudson.model.TextParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>PROJECT</name>
+          <description>The OpenShift project this job will access</description>
+          <defaultValue>rh-jbride-redhat-com-devops-using-ose</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
   <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@1.13">
     <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.2">
       <configVersion>2</configVersion>
@@ -25,7 +50,7 @@
   </definition>
   <triggers>
     <hudson.triggers.SCMTrigger>
-      <spec></spec>
+      <spec>H/5 * * * *</spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
   </triggers>

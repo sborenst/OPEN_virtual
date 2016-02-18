@@ -18,7 +18,7 @@ WARNING: Vagrant and Fedora cloud images are only required if you plan to build 
 [source]
 ----
 vagrant box add Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-libvirt.box --name=fedora23-libvirt
-vagrant box add images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box --name=fedora23-virtualbox
+vagrant box add Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box --name=fedora23-virtualbox
 ----
 
 * Install vagrant guest addon
@@ -30,7 +30,14 @@ NOTE: Alternatively, you could also add it using these instructions - https://gi
 [source]
 ----
 vagrant plugin install vagrant-vbguest
-----	
+----
+
+* Install vagrant libvirt plugin
+
+[source]
+----
+vagrant plugin install libvirt
+----
 
 * Configure the Host machine to support NFS
 
@@ -70,7 +77,11 @@ Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /bin/sed -r -e * d -ibak /etc/exports
 
 [source]
 ----
-vagrant up
+vagrant up virtualbox
+
+or
+
+vagrant up libvirt --provider=libvirt
 ----
 
 ## Use the image
