@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 VAGRANTFILE_API_VERSION = "2"
-$vmMemory = ENV['FUSE_VM_MEMORY'] || 4096
+$vmMemory = ENV['FUSE_VM_MEMORY'] || 3000
 $hostname = "fuse"
 
 $provisionScript = <<SCRIPT
@@ -98,10 +98,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "libvirt" do |cfg|
     cfg.vm.box = "fedora23-libvirt"
+    cfg.vm.network :public_network,
+      :dev => "virbr0",
+      :mode => "bridge",
+      :type => "bridge"
+    cfg.vm.network :private_network,
+      :ip => "172.28.128.4",
+      :libvirt__network_name => "private",
+      :libvirt__forward_mode => "none"
   end
 
   config.vm.define "virtualbox" do |cfg|
     cfg.vm.box = "fedora23-virtualbox"
+    cfg.vm.network "private_network", ip: "172.28.128.4"
   end
 
   # Use NFS for shared folders for better performance
@@ -114,8 +123,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # do NOT download the iso file from a webserver
   config.vbguest.no_remote = true
 
-  config.vm.network "private_network", ip: "172.28.128.4"
-
   config.vm.provider "virtualbox" do |v|
     v.memory = $vmMemory
     v.cpus = 2
@@ -125,9 +132,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.provider :libvirt do |v, override|
     v.memory = $vmMemory
-    v.driver = "qemu"
+    v.driver = "kvm"
     v.cpus = 2
-    #v.name = "dev-fuse-vm"
+    v.volume_cache = "unsafe"
+    v.machine_virtual_size = 45
+    v.management_network_name = "default"
+    #v.random_hostname = "true"
   end
 
   config.vm.provision "shell", inline: $provisionScript, keep_color: true
