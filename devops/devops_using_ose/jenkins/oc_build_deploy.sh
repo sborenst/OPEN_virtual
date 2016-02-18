@@ -27,11 +27,11 @@ AUTH_TOKEN=`cat /var/run/secrets/kubernetes.io/serviceaccount/token`
 
 echo -en "oc_build_deploy.sh:  arguments:\n\tOPENSHIFT_API_URL = $OPENSHIFT_API_URL\n\tPROJECT = $PROJECT\n\tBUILD_CONFIG = $BUILD_CONFIG\n\tAUTH_TOKEN = $AUTH_TOKEN\n"
 
-alias oc="oc -n $PROJECT --token=$AUTH_TOKEN --server=$OPENSHIFT_API_URL --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt --v=10"
+subcommand="-n $PROJECT --token=$AUTH_TOKEN --server=$OPENSHIFT_API_URL --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt --v=10"
 
 # 2)  Kick off build
 echo "Triggering new application build and deployment:"
-BUILD_ID=`oc start-build ${BUILD_CONFIG}`
+BUILD_ID=`oc $subcommand start-build ${BUILD_CONFIG}`
 if [ $? != 0 ];
 then
     exit 1;
@@ -43,7 +43,7 @@ count=0
 attempts=3
 set +e
 while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  oc build-logs $BUILD_ID
+  oc $subcommand build-logs $BUILD_ID
   rc=$?
   count=$(($count+1))
 done
@@ -55,7 +55,7 @@ rc=1
 count=0
 attempts=50
 while [ $rc -ne 0 -a $count -lt $attempts ]; do
-  status=`oc get build ${BUILD_ID} -t '{{.status.phase}}'`
+  status=`oc $subcommand get build ${BUILD_ID} -t '{{.status.phase}}'`
   if [[ $status == "Failed" || $status == "Error" || $status == "Canceled" ]]; then
     echo "Fail: Build completed with unsuccessful status: ${status}"
     exit 1
