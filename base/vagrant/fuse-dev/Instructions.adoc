@@ -90,7 +90,7 @@ vagrant up libvirt --provider=libvirt
 
 [source]
 ----
-vagrant ssh
+vagrant ssh virtualbox or vagrant ssh libvirt
 ----
 
 * Everywhere
@@ -161,7 +161,7 @@ Request timeout for icmp_seq 0
 64 bytes from 172.28.128.4: icmp_seq=3 ttl=64 time=0.267 ms
 ----
 
-## Usefull commands
+## Useful commands
 
 * Start a virtual machine
 
@@ -182,6 +182,62 @@ VBoxManage showvminfo "dev-fuse-vm"
 [source]
 ----
 VBoxManage list vms
+----
+
+
+## Example of config for NAT & private network
+
+* NAT
+
+[source]
+----
+virsh --connect qemu:///system net-destroy default
+virsh --connect qemu:///system net-define --file default.xml
+virsh --connect qemu:///system net-start default
+
+virsh --connect qemu:///system net-dumpxml default > default.xml
+
+<network connections='1'>
+  <name>default</name>
+  <uuid>58a359f0-fe39-40c6-9dfb-03e9e7acd7c1</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:6f:a3:73'/>
+  <domain name='default'/>
+  <ip address='192.168.121.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.121.128' end='192.168.121.254'/>
+    </dhcp>
+  </ip>
+</network>
+----
+
+* Private Network
+
+[source]
+----
+virsh --connect qemu:///system net-destroy private
+virsh --connect qemu:///system net-define --file private.xml
+virsh --connect qemu:///system net-start private
+
+virsh --connect qemu:///system net-dumpxml private > private.xml
+
+<network connections='1' ipv6='yes'>
+  <name>private</name>
+  <uuid>dc59ead7-c22c-460d-a09b-2c44b47e9b51</uuid>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:88:10:6d'/>
+  <ip address='172.28.128.1' netmask='255.255.255.0'>
+    <dhcp>
+      <host mac='52:54:00:88:10:6d' name='fuse-dev' ip='172.28.128.4'/>
+      <range start='172.28.128.1' end='172.28.128.254'/>
+    </dhcp>
+  </ip>
+</network>
 ----
 
 
