@@ -122,6 +122,13 @@ cd /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084
 
 Next, using the Web Browser of the machine, access to the Fuse Management Console at this address `http://172.28.128.4:8181/hawtio`
 
+or using a ssh command
+
+[source]
+----
+ssh -oHostKeyAlgorithms=+ssh-dss admin@172.28.128.4 -p 8101
+----
+
 ## For Fedora only
 
 It could be possible that, after importing the ova file within Virtualbox, that no Virtualbox exists, then a new VirualBox network must be created
@@ -184,6 +191,13 @@ VBoxManage showvminfo "dev-fuse-vm"
 VBoxManage list vms
 ----
 
+* Create a host only adapter
+
+[source]
+----
+vboxmanage hostonlyif create
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 172.28.128.1 --netmask 255.255.255.0
+----
 
 ## Example of config for NAT & private network
 
