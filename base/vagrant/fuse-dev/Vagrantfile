@@ -1,0 +1,135 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+$vmMemory = ENV['FUSE_VM_MEMORY'] || 4096
+$hostname = "fuse"
+
+$provisionScript = <<SCRIPT
+
+# Check memory
+VM_MEMORY="#{$vmMemory}"
+echo "=========================================================================="
+echo "Using VM Memory of ${VM_MEMORY} MB"
+if [ ${VM_MEMORY} -lt 6144 ]; then
+  echo "NOTE: We recommend at least 6144 MB for running with JBoss Fuse and Fabric Containers."
+  echo "      You can specify this with an environment variable FUSE_VM_MEMORY"
+  echo "      E.g. when creating the VM with : 'FUSE_VM_MEMORY=6144 vagrant up'"
+fi
+echo "=========================================================================="
+
+
+# Install Git, 
+echo 'Install git, wget, unzip'
+sudo dnf -y install wget git unzip nfs-utils firewalld
+
+# Configure firewall to allow to use nfs
+
+systemctl status firewalld
+
+sudo firewall-cmd --permanent --add-service=nfs &&
+sudo firewall-cmd --permanent --add-service=rpc-bind &&
+sudo firewall-cmd --permanent --add-service=mountd &&
+sudo firewall-cmd --permanent --add-port=8100-9999/tcp &&
+sudo firewall-cmd --reload
+
+# Create Tmp dir
+# echo "Create Temp Directory under vagrant home"
+# mkdir -p $vagrant_home_dir/tmp
+
+# Download and install JDK
+echo "Download and install JDK8"
+
+pushd $vagrant_home_dir/tmp
+wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
+rpm -Uhv jdk-8u73-linux-x64.rpm
+popd
+
+# Download & install Apache Maven 3.2.3
+echo "Download & install Apache Maven 3.2.3"
+pushd /usr/local
+wget --quiet  http://archive.apache.org/dist/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
+tar -vxf apache-maven-3.2.3-bin.tar.gz
+sudo rm -f apache-maven-3.2.3-bin.tar.gz
+popd
+
+
+# Set env Variables for Maven, JDK & export them
+echo "Set env Variables for Maven, JDK & export them"
+cat <<EOF >> /etc/profile
+
+# Java Home
+export JAVA_HOME=/usr/java/jdk1.8.0_73
+export PATH=$PATH:$JAVA_HOME/bin
+
+# Maven Home
+export M2_HOME=/usr/local/apache-maven-3.2.3
+export PATH=$PATH:$M2_HOME/bin
+EOF
+
+# Install JBoss Fuse 6.2.1, change permissions and add admin user
+echo "Install JBoss Fuse 6.2.1"
+mkdir -p /home/vagrant/fuse
+pushd /home/vagrant/fuse
+unzip -oq ../tmp/jboss-fuse-full-6.2.1.redhat-084.zip
+chown -R vagrant:vagrant /home/vagrant/fuse
+sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084/etc/users.properties
+
+# Start JBoss Fuse
+echo "Start JBoss Fuse"
+su vagrant -c ./jboss-fuse-6.2.1.redhat-084/bin/start
+popd
+
+# Install Demo/Poc project
+echo "Install Demo/Poc project"
+su vagrant -c mkdir -p /home/vagrant/demo
+pushd /home/vagrant/demo
+su vagrant -c git clone https://github.com/FuseByExample/rest-dsl-in-action.git
+cd rest-dsl-in-action
+mvn clean install
+popd
+
+SCRIPT
+
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.hostname = $hostname
+
+  config.vm.define "libvirt" do |cfg|
+    cfg.vm.box = "fedora23-libvirt"
+  end
+
+  config.vm.define "virtualbox" do |cfg|
+    cfg.vm.box = "fedora23-virtualbox"
+  end
+
+  # Use NFS for shared folders for better performance
+  config.vm.synced_folder "tmp/", "/home/vagrant/tmp", nfs: true
+
+  # set auto_update to false, if you do NOT want to check the correct 
+  # additions version when booting this machine
+  config.vbguest.auto_update = false
+
+  # do NOT download the iso file from a webserver
+  config.vbguest.no_remote = true
+
+  config.vm.network "private_network", ip: "172.28.128.4"
+
+  config.vm.provider "virtualbox" do |v|
+    v.memory = $vmMemory
+    v.cpus = 2
+    v.name = "dev-fuse-vm"
+    v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  end
+
+  config.vm.provider :libvirt do |v, override|
+    v.memory = $vmMemory
+    v.driver = "qemu"
+    v.cpus = 2
+    #v.name = "dev-fuse-vm"
+  end
+
+  config.vm.provision "shell", inline: $provisionScript, keep_color: true
+
+end

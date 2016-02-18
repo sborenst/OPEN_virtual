@@ -1,0 +1,190 @@
+# Instructions
+
+## Prerequisites
+
+WARNING: Vagrant and Fedora cloud images are only required if you plan to build the Virtual Image using Vagrant. Otherwise, you can directly import the ova image within VirtualBox.
+
+* Download and install https://www.vagrantup.com/downloads.html[Vagrant >= 1.7]
+
+* Download and install https://www.virtualbox.org/wiki/Downloads[VirtualBox >= 5]
+
+* Download https://getfedora.org/cloud/download/[Fedora Cloud images]
+
+** https://download.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-libvirt.box[Libvirt]
+** https://download.fedoraproject.org/pub/fedora/linux/releases/23/Cloud/x86_64/Images/Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box[Virtualbox]
+
+* Install Vagrant boxes
+
+[source]
+----
+vagrant box add Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-libvirt.box --name=fedora23-libvirt
+vagrant box add Fedora-Cloud-Base-Vagrant-23-20151030.x86_64.vagrant-virtualbox.box --name=fedora23-virtualbox
+----
+
+* Install vagrant guest addon
+
+As the Fedora Vagrant box doesn't include the VirtualBox Guest Additions, we will use the vagrant vbguest plugin to install it during the creation of the VM. 
+
+NOTE: Alternatively, you could also add it using these instructions - https://gist.github.com/fernandoaleman/5083680
+
+[source]
+----
+vagrant plugin install vagrant-vbguest
+----
+
+* Install vagrant libvirt plugin
+
+[source]
+----
+vagrant plugin install libvirt
+----
+
+* Configure the Host machine to support NFS
+
+For performances reason, we will use NFS between the Host and Guest machine to copy the VirtualBox Guest extensions iso file, JBoss Fuse or any other files. To automate the procedure and avoid that Vagrant requests to the host to provide the admin password during the `vagrant up` process, the following lines must be added to the sudoers file of the host.
+
+NOTE: See this article for http://askubuntu.com/questions/412525/vagrant-up-and-annoying-nfs-password-asking[more info].
+
+Edit the `/etc/sudoers` file using the cmd tool `sudo visudo` and copy/paste these lines
+
+.MacOS
+[source]
+----
+As of version 1.7.3, the sudoers file in OS X should have these entries: 
+Cmnd_Alias VAGRANT_EXPORTS_ADD = /usr/bin/tee -a /etc/exports
+Cmnd_Alias VAGRANT_NFSD = /sbin/nfsd restart
+Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /usr/bin/sed -E -e /*/ d -ibak /etc/exports
+%admin ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD, VAGRANT_EXPORTS_REMOVE
+----
+
+.Linux
+[source]
+----
+Cmnd_Alias VAGRANT_EXPORTS_ADD = /usr/bin/tee -a /etc/exports
+Cmnd_Alias VAGRANT_NFSD_CHECK = /etc/init.d/nfs-kernel-server status
+Cmnd_Alias VAGRANT_NFSD_START = /etc/init.d/nfs-kernel-server start
+Cmnd_Alias VAGRANT_NFSD_APPLY = /usr/sbin/exportfs -ar
+Cmnd_Alias VAGRANT_EXPORTS_REMOVE = /bin/sed -r -e * d -ibak /etc/exports
+%sudo ALL=(root) NOPASSWD: VAGRANT_EXPORTS_ADD, VAGRANT_NFSD_CHECK, VAGRANT_NFSD_START, VAGRANT_NFSD_APPLY, VAGRANT_EXPORTS_REMOVE
+----
+
+## Download & install JBoss Fuse 6.2.1 GA release
+
+* Download the full size zip of https://developers.redhat.com/download-manager/file/jboss-fuse-6.2.1.GA-full_zip.zip[JBoss Fuse 6.2.1 GA Release]
+* Install the file within the `tmp` folder
+
+## Build the VM image
+
+[source]
+----
+vagrant up virtualbox
+
+or
+
+vagrant up libvirt --provider=libvirt
+----
+
+## Use the image
+
+* Within the vagrant project folder
+
+[source]
+----
+vagrant ssh
+----
+
+* Everywhere
+
+If the image (ova file) has been imported within VirtualBox, then you can start the VM machine and issue a ssh session
+
+[source]
+----
+VBoxManage startvm "dev-fuse-vm" --type headless
+echo vagrant | ssh vagrant@localhost -p 2222
+----
+
+* Start vboxnet0 adpater 
+
+[source]
+----
+sudo ifdown vboxnet0 && sudo ifup vboxnet0
+----
+
+## Test JBoss Fuse
+
+Log on using ssh to the VM machine and move to the Fuse folder containing the instance of the server in order to launch it
+
+[source]
+----
+cd /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084
+./bin/start
+----
+
+Next, using the Web Browser of the machine, access to the Fuse Management Console at this address `http://172.28.128.4:8181/hawtio`
+
+## For Fedora only
+
+It could be possible that, after importing the ova file within Virtualbox, that no Virtualbox exists, then a new VirualBox network must be created
+with this IP address `172.28.128.1` and network mask `255.255.255.0`. When the Virtualbox network has been created and assigned to your Virtual Box machine, we will add a network adapter for the vboxnet0 interface.
+So, add this config file `ifcfg-vboxnet0` within the folder `/etc/sysconfig/network-scripts/` of the fedora host.
+
+WARNING: The HWADDR field correponds to the MAC address asigned. You can find it within the settings of VM instance.
+
+[source]
+----
+more /etc/sysconfig/network-scripts/ifcfg-vboxnet0
+DEVICE="vboxnet0"
+HWADDR="0A:00:27:00:00:00"
+BOOTPROTO="static"
+IPADDR=172.28.128.4
+NETMASK=255.255.255.0
+GATEWAY=172.28.128.1
+ONBOOT="yes"
+----
+
+And start the vboxnet0 adapter
+
+[source]
+----
+sudo ifdow vboxnet0 && sudo ifup vboxnet0
+----
+
+You should be able form the host to access/ping the VM
+
+[source]
+----
+ping 172.28.128.4
+PING 172.28.128.4 (172.28.128.4): 56 data bytes
+Request timeout for icmp_seq 0
+64 bytes from 172.28.128.4: icmp_seq=1 ttl=64 time=364.991 ms
+64 bytes from 172.28.128.4: icmp_seq=2 ttl=64 time=0.214 ms
+64 bytes from 172.28.128.4: icmp_seq=3 ttl=64 time=0.267 ms
+----
+
+## Usefull commands
+
+* Start a virtual machine
+
+[source]
+----
+VBoxManage startvm "dev-fuse-vm" --type headless
+----
+
+* Check the status of the virtual machine
+
+[source]
+----
+VBoxManage showvminfo "dev-fuse-vm"
+----
+
+* List the Virtual Machines
+
+[source]
+----
+VBoxManage list vms
+----
+
+
+
+
+
