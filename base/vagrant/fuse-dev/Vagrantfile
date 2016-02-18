@@ -56,7 +56,7 @@ popd
 
 # Set env Variables for Maven, JDK & export them
 echo "Set env Variables for Maven, JDK & export them"
-cat <<EOF >> /etc/profile
+su vagrant -c 'cat <<EOF' >> /home/vagrant/.bash_profile
 
 # Java Home
 export JAVA_HOME=/usr/java/jdk1.8.0_73
