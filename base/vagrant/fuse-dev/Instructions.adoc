@@ -279,7 +279,6 @@ virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -
 virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
 ----
 
-
 # Import it
 
 [source]
@@ -289,6 +288,12 @@ virsh --connect qemu:///system define fuse-dev_libvirt_config.xml
 virsh --connect qemu:///system start fuse-dev_libvirt
 ---- 
 
+# Convert to qcow2
+
+[source]
+----
+sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse-dev_libvirt.qcow2
+---- 
 
 
 
