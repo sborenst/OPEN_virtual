@@ -279,7 +279,7 @@ virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -
 virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
 ----
 
-# Import it
+# Import the VM image using the Config File
 
 [source]
 ----
@@ -288,11 +288,12 @@ virsh --connect qemu:///system define fuse-dev_libvirt_config.xml
 virsh --connect qemu:///system start fuse-dev_libvirt
 ---- 
 
-# Convert to qcow2
+# Convert to qcow2 & import it
 
 [source]
 ----
 sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse-dev_libvirt.qcow2
+virt-install --connect qemu:///system --ram 1024 -n fedora_23 -r 2048 --os-type=linux --os-variant=fed23 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --vnc --noautoconsole --import
 ---- 
 
 
