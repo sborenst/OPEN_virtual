@@ -35,7 +35,7 @@ RUN mkdir -p /opt/openshift/configuration/plugins
 
 RUN curl http://pkg.jenkins-ci.org/redhat/jenkins.repo -o /etc/yum.repos.d/jenkins.repo && \
     rpm --import http://pkg.jenkins-ci.org/redhat/jenkins-ci.org.key && \
-    yum install -y which tar zip unzip java-1.8.0-openjdk-devel jenkins-$JENKINS_VERSION git && \
+    yum install -y iproute which tar zip unzip java-1.8.0-openjdk-devel jenkins-$JENKINS_VERSION git && \
     yum clean all  && \
     chmod og+rw /var/lib/jenkins
 
@@ -101,14 +101,14 @@ COPY ./contrib/ /opt/openshift
 RUN  chmod -R og+rw /opt/openshift
 
 VOLUME ["/var/lib/jenkins"]
+RUN chown -R jenkins:jenkins /var/lib/jenkins/
+RUN chown -R jenkins:jenkins /usr/local/bin/
+
 # JA Bride
 # Modifying to jenkins because otherwise end up wth the following error when attempting to execute git:
 #   fatal: unable to look up current user in the passwd file: no such user
 # Need to also modify cluster security:  oc edit scc restricted
 # Change runAsUser -> type: RunAsAny
-#USER 1001
-RUN chown -R jenkins:jenkins /var/lib/jenkins/
-RUN chown -R jenkins:jenkins /usr/local/bin/
 USER jenkins
 
 ENTRYPOINT ["/usr/local/bin/run.sh"]
