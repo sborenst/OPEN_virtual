@@ -49,7 +49,7 @@ while [ $rc -ne 0 -a $count -lt $attempts ]; do
   fi
 
   if [ $status == "Complete" ]; then
-    echo "Build completed successfully, will test deployment next"
+    echo "Build completed successfully!"
     rc=0
   else
     count=$(($count+1))
