@@ -170,6 +170,8 @@ Request timeout for icmp_seq 0
 
 ## Useful commands
 
+### Virtualbox
+
 * Start a virtual machine
 
 [source]
@@ -199,7 +201,9 @@ vboxmanage hostonlyif create
 vboxmanage hostonlyif ipconfig vboxnet0 --ip 172.28.128.1 --netmask 255.255.255.0
 ----
 
-## Example of config for NAT & private network
+### Libvirt
+
+Example of config for NAT & private network
 
 * NAT
 
@@ -253,6 +257,38 @@ virsh --connect qemu:///system net-dumpxml private > private.xml
   </ip>
 </network>
 ----
+
+# Clone the VM created
+
+[source]
+----
+virsh --connect qemu:///system list --all
+ Id    Name                           State
+----------------------------------------------------
+ 60    fuse-dev_libvirt               running
+
+virsh --connect qemu:///system shutdown fuse-dev_libvirt
+
+virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -f fuse-dev_libvirt.qcow2
+----
+
+# Export the VM config
+
+[source]
+----
+virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
+----
+
+
+# Import it
+
+[source]
+----
+virsh --connect qemu:///system undefine fuse-dev_libvirt
+virsh --connect qemu:///system define fuse-dev_libvirt_config.xml
+virsh --connect qemu:///system start fuse-dev_libvirt
+---- 
+
 
 
 
