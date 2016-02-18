@@ -90,7 +90,7 @@ vagrant up libvirt --provider=libvirt
 
 [source]
 ----
-vagrant ssh
+vagrant ssh virtualbox or vagrant ssh libvirt
 ----
 
 * Everywhere
@@ -121,6 +121,13 @@ cd /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084
 ----
 
 Next, using the Web Browser of the machine, access to the Fuse Management Console at this address `http://172.28.128.4:8181/hawtio`
+
+or using a ssh command
+
+[source]
+----
+ssh -oHostKeyAlgorithms=+ssh-dss admin@172.28.128.4 -p 8101
+----
 
 ## For Fedora only
 
@@ -161,7 +168,9 @@ Request timeout for icmp_seq 0
 64 bytes from 172.28.128.4: icmp_seq=3 ttl=64 time=0.267 ms
 ----
 
-## Usefull commands
+## Useful commands
+
+### Virtualbox
 
 * Start a virtual machine
 
@@ -183,6 +192,109 @@ VBoxManage showvminfo "dev-fuse-vm"
 ----
 VBoxManage list vms
 ----
+
+* Create a host only adapter
+
+[source]
+----
+vboxmanage hostonlyif create
+vboxmanage hostonlyif ipconfig vboxnet0 --ip 172.28.128.1 --netmask 255.255.255.0
+----
+
+### Libvirt
+
+Example of config for NAT & private network
+
+* NAT
+
+[source]
+----
+virsh --connect qemu:///system net-destroy default
+virsh --connect qemu:///system net-define --file default.xml
+virsh --connect qemu:///system net-start default
+
+virsh --connect qemu:///system net-dumpxml default > default.xml
+
+<network connections='1'>
+  <name>default</name>
+  <uuid>58a359f0-fe39-40c6-9dfb-03e9e7acd7c1</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr0' stp='on' delay='0'/>
+  <mac address='52:54:00:6f:a3:73'/>
+  <domain name='default'/>
+  <ip address='192.168.121.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.121.128' end='192.168.121.254'/>
+    </dhcp>
+  </ip>
+</network>
+----
+
+* Private Network
+
+[source]
+----
+virsh --connect qemu:///system net-destroy private
+virsh --connect qemu:///system net-define --file private.xml
+virsh --connect qemu:///system net-start private
+
+virsh --connect qemu:///system net-dumpxml private > private.xml
+
+<network connections='1' ipv6='yes'>
+  <name>private</name>
+  <uuid>dc59ead7-c22c-460d-a09b-2c44b47e9b51</uuid>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:88:10:6d'/>
+  <ip address='172.28.128.1' netmask='255.255.255.0'>
+    <dhcp>
+      <host mac='52:54:00:88:10:6d' name='fuse-dev' ip='172.28.128.4'/>
+      <range start='172.28.128.1' end='172.28.128.254'/>
+    </dhcp>
+  </ip>
+</network>
+----
+
+# Clone the VM created
+
+[source]
+----
+virsh --connect qemu:///system list --all
+ Id    Name                           State
+----------------------------------------------------
+ 60    fuse-dev_libvirt               running
+
+virsh --connect qemu:///system shutdown fuse-dev_libvirt
+
+virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -f fuse-dev_libvirt.qcow2
+----
+
+# Export the VM config
+
+[source]
+----
+virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
+----
+
+# Import the VM image using the Config File
+
+[source]
+----
+virsh --connect qemu:///system undefine fuse-dev_libvirt
+virsh --connect qemu:///system define fuse-dev_libvirt_config.xml
+virsh --connect qemu:///system start fuse-dev_libvirt
+---- 
+
+# Convert to qcow2 & import it
+
+[source]
+----
+sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse-dev_libvirt.qcow2
+virt-install --connect qemu:///system --ram 1024 -n fedora_23 -r 2048 --os-type=linux --os-variant=fed23 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --vnc --noautoconsole --import
+---- 
 
 
 
