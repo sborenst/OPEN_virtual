@@ -149,7 +149,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.graphics_type = "vnc"
     v.graphics_ip = "172.28.128.4"
     v.graphics_port = 5900
-    v.graphics_password = ""
+    v.graphics_passwd = ""
   end
 
   config.vm.provision "shell" do |s|
