@@ -65,6 +65,8 @@ export PATH=$PATH:$M2_HOME/bin
 EOF'
 
 
+
+
 # Install JBoss Fuse, change permissions and add admin user
 echo "Install JBoss Fuse ${FUSE_VERSION}"
 mkdir -p /home/vagrant/fuse
@@ -84,6 +86,6 @@ su vagrant -c 'mkdir -p /home/vagrant/demo'
 pushd /home/vagrant/demo
 su vagrant -c 'git clone '"${GIT_REPO}"''
 cd rest-dsl-in-action
-mvn clean install
+su vagrant -c 'mvn clean install'
 popd
 
