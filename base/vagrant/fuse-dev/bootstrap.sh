@@ -60,7 +60,7 @@ su vagrant -c 'cat <<EOF >> /home/vagrant/.bash_profile
 export JAVA_HOME=/usr/java/jdk1.8.0_73
 export PATH=\$PATH:\$JAVA_HOME/bin
 # Maven Home
-export M2_HOME=/usr/local/apache-maven-$MAVEN_VERSION
+export M2_HOME=/usr/local/apache-maven-'"${MAVEN_VERSION}"'
 export PATH=\$PATH:\$M2_HOME/bin
 EOF'
 
