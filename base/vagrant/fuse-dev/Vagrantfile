@@ -10,14 +10,19 @@ $hostname = "fuse"
 
 $provisionScript = <<SCRIPT
 
-# Check memory
+# Local variables
 VM_MEMORY="#{$vmMemory}"
+MAVEN_VERSION="#{$mavenVersion}"
+GIT_REPO="#{$gitRepo}"
+FUSE_VERSION="#{$fuseVersion}"
+
+# Check memory
 echo "=========================================================================="
 echo "Using VM Memory of ${VM_MEMORY} MB"
-if [ ${VM_MEMORY} -lt 6144 ]; then
-  echo "NOTE: We recommend at least 6144 MB for running with JBoss Fuse and Fabric Containers."
+if [ ${VM_MEMORY} -lt 3000 ]; then
+  echo "NOTE: We recommend at least 3000 MB for running with JBoss Fuse and Fabric Containers."
   echo "      You can specify this with an environment variable FUSE_VM_MEMORY"
-  echo "      E.g. when creating the VM with : 'FUSE_VM_MEMORY=6144 vagrant up'"
+  echo "      E.g. when creating the VM with : 'FUSE_VM_MEMORY=3000 vagrant up'"
 fi
 echo "=========================================================================="
 
@@ -48,12 +53,12 @@ wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%
 rpm -Uhv jdk-8u73-linux-x64.rpm
 popd
 
-# Download & install Apache Maven $mavenVersion
-echo "Download & install Apache Maven $mavenVersion"
+# Download & install Apache Maven ${MAVEN_VERSION}
+echo "Download & install Apache Maven ${MAVEN_VERSION}"
 pushd /usr/local
-wget --quiet  http://archive.apache.org/dist/maven/maven-3/$mavenVersion/binaries/apache-maven-$mavenVersion-bin.tar.gz
-tar -vxf apache-maven-$mavenVersion-bin.tar.gz
-sudo rm -f apache-maven-$mavenVersion-bin.tar.gz
+wget --quiet  http://archive.apache.org/dist/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz
+tar -vxf apache-maven-${MAVEN_VERSION}-bin.tar.gz
+sudo rm -f apache-maven-${MAVEN_VERSION}-bin.tar.gz
 popd
 
 
@@ -71,23 +76,23 @@ export PATH=\$PATH:\$M2_HOME/bin
 EOF'
 
 # Install JBoss Fuse, change permissions and add admin user
-echo "Install JBoss Fuse $fuseVersion"
+echo "Install JBoss Fuse ${FUSE_VERSION}"
 mkdir -p /home/vagrant/fuse
 pushd /home/vagrant/fuse
-unzip -oq ../tmp/jboss-fuse-full-$fuseVersion.zip
+unzip -oq ../tmp/jboss-fuse-full-${FUSE_VERSION}.zip
 chown -R vagrant:vagrant /home/vagrant/fuse
-sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-$fuseVersion/etc/users.properties
+sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-${FUSE_VERSION}/etc/users.properties
 
 # Start JBoss Fuse
 echo "Start JBoss Fuse"
-su vagrant -c './jboss-fuse-$fuseVersion/bin/start'
+su vagrant -c './jboss-fuse-${FUSE_VERSION}/bin/start'
 popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
 su vagrant -c 'mkdir -p /home/vagrant/demo'
 pushd /home/vagrant/demo
-su vagrant -c 'git clone $gitRepo'
+su vagrant -c 'git clone ${GIT_REPO}'
 cd rest-dsl-in-action
 mvn clean install
 popd
@@ -140,8 +145,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.volume_cache = "unsafe"
     v.machine_virtual_size = 45
     v.management_network_name = "default"
+    # VNC setup
+    v.graphics_type = "vnc"
+    v.graphics_ip = "172.28.128.4"
+    v.graphics_port = 5900
+    v.graphics_password = ""
   end
 
-  config.vm.provision "shell", inline: $provisionScript, keep_color: true
+  config.vm.provision "shell" do |s|
+    s.inline     = $provisionScript, 
+    s.keep_color = true,
+    s.args       = []
+
 
 end
