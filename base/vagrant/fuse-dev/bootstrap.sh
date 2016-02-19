@@ -81,5 +81,3 @@ popd
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
 su -c 'source /home/vagrant/.bash_profile && mkdir -p /home/vagrant/demo && cd /home/vagrant/demo && git clone '"${GIT_REPO_URL}"' && cd '"${GIT_REPO_NAME}"' && mvn clean install' vagrant
-popd
-
