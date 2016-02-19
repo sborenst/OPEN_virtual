@@ -5,7 +5,8 @@ VAGRANTFILE_API_VERSION = "2"
 
 $vmMemory = ENV['FUSE_VM_MEMORY'] || 3000
 $mavenVersion = ENV['MAVEN_VERSION'] || "3.2.3"
-$gitRepo = ENV['GIT_REPO'] || "https://github.com/FuseByExample/rest-dsl-in-action.git"
+$gitRepoURL = ENV['GIT_REPO_URL'] || "https://github.com/FuseByExample/rest-dsl-in-action.git"
+$gitRepoName = ENV['GIT_REPO_NAME'] || "rest-dsl-in-action"
 $fuseVersion = ENV['FUSE_VERSION'] || "6.2.1.redhat-084"
 $hostname = "fuse"
 
@@ -58,7 +59,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell" do |s|
     s.path       = "bootstrap.sh"
     s.keep_color = true
-    s.args       = [$vmMemory,$mavenVersion,$fuseVersion,$gitRepo]
+    s.args       = [$vmMemory,$mavenVersion,$fuseVersion,$gitRepoURL,$gitRepoName]
   end
 
 end

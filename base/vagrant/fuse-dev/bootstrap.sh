@@ -6,7 +6,8 @@ set -x
 VM_MEMORY=$1
 MAVEN_VERSION=$2
 FUSE_VERSION=$3
-GIT_REPO=$4
+GIT_REPO_URL=$4
+GIT_REPO_NAME=$5
 
 # Check memory
 echo "=========================================================================="
@@ -79,8 +80,6 @@ popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
-su -c 'mkdir -p /home/vagrant/demo' vagrant
-pushd /home/vagrant/demo
-su -c 'git clone '"${GIT_REPO}"'; cd rest-dsl-in-action; mvn clean install' vagrant
+su -c 'source /home/vagrant/.bash_profile && mkdir -p /home/vagrant/demo && cd /home/vagrant/demo && git clone '"${GIT_REPO_URL}"' && cd '"${GIT_REPO_NAME}"' && mvn clean install' vagrant
 popd
 
