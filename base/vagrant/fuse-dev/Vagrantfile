@@ -58,7 +58,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.provision "shell" do |s|
     s.path       = "bootstrap.sh"
     s.keep_color = true
-    s.args       = ["#{$vmMemory}","#{$mavenVersion}","#{$fuseVersion}","#{$gitRepo}"]
+    s.args       = [$vmMemory,$mavenVersion,$fuseVersion,$gitRepo]
   end
 
 end

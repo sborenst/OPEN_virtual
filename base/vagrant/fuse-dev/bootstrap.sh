@@ -5,8 +5,8 @@ set -x
 # Local variables
 VM_MEMORY=$1
 MAVEN_VERSION=$2
-GIT_REPO=$3
-FUSE_VERSION=$4
+FUSE_VERSION=$3
+GIT_REPO=$4
 
 # Check memory
 echo "=========================================================================="
