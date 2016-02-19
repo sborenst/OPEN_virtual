@@ -85,14 +85,14 @@ sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-${FUSE_VERSION}/etc/users
 
 # Start JBoss Fuse
 echo "Start JBoss Fuse"
-su vagrant -c './jboss-fuse-#{$FUSE_VERSION}/bin/start'
+su vagrant -c './jboss-fuse-'"${FUSE_VERSION}"'/bin/start'
 popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
 su vagrant -c 'mkdir -p /home/vagrant/demo'
 pushd /home/vagrant/demo
-su vagrant -c 'git clone #{$GIT_REPO}'
+su vagrant -c 'git clone '"${GIT_REPO}"''
 cd rest-dsl-in-action
 mvn clean install
 popd
