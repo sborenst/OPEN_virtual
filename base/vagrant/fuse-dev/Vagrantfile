@@ -3,6 +3,9 @@
 
 VAGRANTFILE_API_VERSION = "2"
 $vmMemory = ENV['FUSE_VM_MEMORY'] || 3000
+$mavenVersion = ENV['MAVEN_VERSION'] || "3.2.3"
+$gitRepo = ENV['GIT_REPO'] || "https://github.com/FuseByExample/rest-dsl-in-action.git"
+$fuseVersion = ENV['FUSE_VERSION'] || "6.2.1.redhat-084"
 $hostname = "fuse"
 
 $provisionScript = <<SCRIPT
@@ -45,12 +48,12 @@ wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%
 rpm -Uhv jdk-8u73-linux-x64.rpm
 popd
 
-# Download & install Apache Maven 3.2.3
-echo "Download & install Apache Maven 3.2.3"
+# Download & install Apache Maven $mavenVersion
+echo "Download & install Apache Maven $mavenVersion"
 pushd /usr/local
-wget --quiet  http://archive.apache.org/dist/maven/maven-3/3.2.3/binaries/apache-maven-3.2.3-bin.tar.gz
-tar -vxf apache-maven-3.2.3-bin.tar.gz
-sudo rm -f apache-maven-3.2.3-bin.tar.gz
+wget --quiet  http://archive.apache.org/dist/maven/maven-3/$mavenVersion/binaries/apache-maven-$mavenVersion-bin.tar.gz
+tar -vxf apache-maven-$mavenVersion-bin.tar.gz
+sudo rm -f apache-maven-$mavenVersion-bin.tar.gz
 popd
 
 
@@ -63,28 +66,28 @@ export JAVA_HOME=/usr/java/jdk1.8.0_73
 export PATH=\$PATH:\$JAVA_HOME/bin
 
 # Maven Home
-export M2_HOME=/usr/local/apache-maven-3.2.3
+export M2_HOME=/usr/local/apache-maven-$mavenVersion
 export PATH=\$PATH:\$M2_HOME/bin
 EOF'
 
-# Install JBoss Fuse 6.2.1, change permissions and add admin user
-echo "Install JBoss Fuse 6.2.1"
+# Install JBoss Fuse, change permissions and add admin user
+echo "Install JBoss Fuse $fuseVersion"
 mkdir -p /home/vagrant/fuse
 pushd /home/vagrant/fuse
-unzip -oq ../tmp/jboss-fuse-full-6.2.1.redhat-084.zip
+unzip -oq ../tmp/jboss-fuse-full-$fuseVersion.zip
 chown -R vagrant:vagrant /home/vagrant/fuse
-sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-6.2.1.redhat-084/etc/users.properties
+sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-$fuseVersion/etc/users.properties
 
 # Start JBoss Fuse
 echo "Start JBoss Fuse"
-su vagrant -c './jboss-fuse-6.2.1.redhat-084/bin/start'
+su vagrant -c './jboss-fuse-$fuseVersion/bin/start'
 popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
 su vagrant -c 'mkdir -p /home/vagrant/demo'
 pushd /home/vagrant/demo
-su vagrant -c 'git clone https://github.com/FuseByExample/rest-dsl-in-action.git'
+su vagrant -c 'git clone $gitRepo'
 cd rest-dsl-in-action
 mvn clean install
 popd
