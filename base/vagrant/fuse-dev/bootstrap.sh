@@ -58,10 +58,10 @@ echo "Set env Variables for Maven, JDK & export them"
 su vagrant -c 'cat <<EOF >> /home/vagrant/.bash_profile
 # Java Home
 export JAVA_HOME=/usr/java/jdk1.8.0_73
-export PATH=$PATH:$JAVA_HOME/bin
+export PATH=\$PATH:\$JAVA_HOME/bin
 # Maven Home
 export M2_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
-export PATH=$PATH:$M2_HOME/bin
+export PATH=\$PATH:\$M2_HOME/bin
 EOF'
 
 
