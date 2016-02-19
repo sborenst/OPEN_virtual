@@ -1,12 +1,12 @@
+#!/usr/bin/env bash
 
-
-$provisionScript = <<SCRIPT
+set -x
 
 # Local variables
-VM_MEMORY="#{$vmMemory}"
-MAVEN_VERSION="#{$mavenVersion}"
-GIT_REPO="#{$gitRepo}"
-FUSE_VERSION="#{$fuseVersion}"
+VM_MEMORY=$1
+MAVEN_VERSION=$2
+GIT_REPO=$3
+FUSE_VERSION=$4
 
 # Check memory
 echo "=========================================================================="
@@ -75,4 +75,3 @@ cd rest-dsl-in-action
 mvn clean install
 popd
 
-SCRIPT

@@ -241,6 +241,7 @@ virsh --connect qemu:///system net-dumpxml default > default.xml
 virsh --connect qemu:///system net-destroy private
 virsh --connect qemu:///system net-define --file private.xml
 virsh --connect qemu:///system net-start private
+virsh --connect qemu:///system net-autostart --disable private
 
 virsh --connect qemu:///system net-dumpxml private > private.xml
 
