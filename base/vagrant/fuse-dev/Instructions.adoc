@@ -293,9 +293,19 @@ virsh --connect qemu:///system start fuse-dev_libvirt
 [source]
 ----
 sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse-dev_libvirt.qcow2
-virt-install --connect qemu:///system --ram 1024 -n fedora_23 -r 2048 --os-type=linux --os-variant=fed23 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --vnc --noautoconsole --import
+
+virsh --connect qemu:///system shutdown fuse-dev
+virsh --connect qemu:///system undefine fuse-dev
+
+virt-install --connect qemu:///system --name=fuse-dev --virt-type=kvm --ram=2048 --os-type=linux --os-variant=fedora22 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --network bridge=virbr0 --vnc --noautoconsole --import --check all=off
 ---- 
 
+# Connect to the console of the VM
+
+[source]
+----
+virsh --connect qemu:///system console fuse-dev
+----
 
 
 
