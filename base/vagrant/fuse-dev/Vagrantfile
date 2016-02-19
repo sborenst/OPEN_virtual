@@ -53,7 +53,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   # Add bash profile
-  config.vm.provision "file", source: "env/bash_profile", destination: "/home/vagrant/.bash_profile"
+  # config.vm.provision "file", source: "env/bash_profile", destination: "/home/vagrant/.bash_profile"
   
   config.vm.provision "shell" do |s|
     s.path       = "bootstrap.sh"

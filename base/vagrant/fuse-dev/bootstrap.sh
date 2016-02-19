@@ -53,6 +53,18 @@ tar -vxf apache-maven-${MAVEN_VERSION}-bin.tar.gz
 sudo rm -f apache-maven-${MAVEN_VERSION}-bin.tar.gz
 popd
 
+# Set env Variables for Maven, JDK & export them
+echo "Set env Variables for Maven, JDK & export them"
+su vagrant -c 'cat <<EOF >> /home/vagrant/.bash_profile
+# Java Home
+export JAVA_HOME=/usr/java/jdk1.8.0_73
+export PATH=$PATH:$JAVA_HOME/bin
+# Maven Home
+export M2_HOME=/usr/local/apache-maven-${MAVEN_VERSION}
+export PATH=$PATH:$M2_HOME/bin
+EOF'
+
+
 # Install JBoss Fuse, change permissions and add admin user
 echo "Install JBoss Fuse ${FUSE_VERSION}"
 mkdir -p /home/vagrant/fuse
