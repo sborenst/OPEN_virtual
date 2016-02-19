@@ -41,7 +41,7 @@ sudo firewall-cmd --reload
 echo "Download and install JDK8"
 
 pushd $vagrant_home_dir/tmp
-wget --quiet --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
+wget --quiet --no-check-certificate --no-cookies --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
 rpm -Uhv jdk-8u73-linux-x64.rpm
 popd
 
@@ -55,15 +55,14 @@ popd
 
 # Set env Variables for Maven, JDK & export them
 echo "Set env Variables for Maven, JDK & export them"
-su vagrant -c 'cat <<EOF >> /home/vagrant/.bash_profile
+su -c 'cat <<EOF >> /home/vagrant/.bash_profile
 # Java Home
 export JAVA_HOME=/usr/java/jdk1.8.0_73
 export PATH=\$PATH:\$JAVA_HOME/bin
 # Maven Home
 export M2_HOME=/usr/local/apache-maven-'"${MAVEN_VERSION}"'
 export PATH=\$PATH:\$M2_HOME/bin
-EOF'
-
+EOF' vagrant
 
 # Install JBoss Fuse, change permissions and add admin user
 echo "Install JBoss Fuse ${FUSE_VERSION}"
@@ -75,15 +74,13 @@ sed -i "s|#admin|admin|" /home/vagrant/fuse/jboss-fuse-${FUSE_VERSION}/etc/users
 
 # Start JBoss Fuse
 echo "Start JBoss Fuse"
-su vagrant -c './jboss-fuse-'"${FUSE_VERSION}"'/bin/start'
+su -c './jboss-fuse-'"${FUSE_VERSION}"'/bin/start' vagrant
 popd
 
 # Install Demo/Poc project
 echo "Install Demo/Poc project"
-su vagrant -c 'mkdir -p /home/vagrant/demo'
+su -c 'mkdir -p /home/vagrant/demo' vagrant
 pushd /home/vagrant/demo
-su vagrant -c 'git clone '"${GIT_REPO}"''
-cd rest-dsl-in-action
-su vagrant -c 'mvn clean install'
+su -c 'git clone '"${GIT_REPO}"'; cd rest-dsl-in-action; mvn clean install' vagrant
 popd
 
