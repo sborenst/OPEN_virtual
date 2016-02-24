@@ -275,12 +275,16 @@ virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -
 
 # Export the VM config
 
+To export the configuration of the VM, simply run this virsh command
+
 [source]
 ----
 virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
 ----
 
 # Import the VM image using the Config File
+
+Every VM can be recreated using its XML Configuration file containing the defintion of the VM, cpus, memory, location of the RAW image, ...
 
 [source]
 ----
@@ -304,6 +308,8 @@ virt-install --connect qemu:///system --name=fuse-dev --virt-type=kvm --ram=2048
 ---- 
 
 # Connect to the console of the VM
+
+Every VM running within KVM/QEMU can be accessed using the option `console` of the command `virsh`. This command allows yoiu to check the configuration of the VM and its networks if you can't access it.
 
 [source]
 ----
