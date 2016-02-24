@@ -245,7 +245,7 @@ virsh --connect qemu:///system net-autostart private
 
 virsh --connect qemu:///system net-dumpxml private > private.xml
 
-<network connections='1' ipv6='yes'>
+<network connections='1' ipv6='no'>
   <name>private</name>
   <uuid>dc59ead7-c22c-460d-a09b-2c44b47e9b51</uuid>
   <bridge name='virbr1' stp='on' delay='0'/>
