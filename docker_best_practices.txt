@@ -1,0 +1,28 @@
+source:  https://developerblog.redhat.com/2016/02/24/10-things-to-avoid-in-docker-containers/
+
+1) Don’t store data in containers – 
+    A container can be stopped, destroyed, or replaced. 
+    An application version 1.0 running in container should be easily replaced by the version 1.1 without any impact or loss of data. 
+    For that reason, if you need to store data, store it in a volume, but take care if two containers write data on the same volume because it could cause corruption.  
+    Make sure your applications are designed to write to shared data stores.
+
+6) Don’t use only the “latest” tag – The latest tag is just like the “SNAPSHOT” for Maven users. 
+    Tags are encouraged to be used specially when you have a layered filesytem. 
+    You don’t want to have surprises when you build your image 2 months later and figure out that your application can’t run because a top layer was replaced by a new version that it’s not backward compatible or because a wrong “latest” version is in the build cache. The latest should also be avoided when deploying containers in production.
+
+7) Don’t run more than one process in a single container – 
+    Containers are perfect to run a single process (http daemon, application server, database), but if you have more than a single process, you will have troubles to manage, get logs, and update them individually.
+
+8) Don’t store credentials in the image. Use environment variables – 
+    You don’t want to hardcode any username/password in you image. 
+    Use the environment variables to get that information from outside the container. 
+    A great example for it is the postgres image.
+
+9) Run processes with a non-root user – 
+    “By default docker containers run as root. (…) As docker matures, more secure default options may become available. 
+    For now, requiring root is dangerous for others and may not be available in all environments. 
+    Your image should use the USER instruction to specify a non-root user for containers to run as”. (From Guidance for Docker Image Authors)
+
+10) Don’t rely on IP addresses – 
+    Each container have their own internal IP address and it could change if you start and stop it. 
+    If your application or microservices needs to communicate to another container, use any names and/or environment variables to pass the proper information from one container to another.
