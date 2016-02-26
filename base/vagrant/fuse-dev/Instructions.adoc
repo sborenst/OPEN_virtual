@@ -241,11 +241,11 @@ virsh --connect qemu:///system net-dumpxml default > default.xml
 virsh --connect qemu:///system net-destroy private
 virsh --connect qemu:///system net-define --file private.xml
 virsh --connect qemu:///system net-start private
-virsh --connect qemu:///system net-autostart --disable private
+virsh --connect qemu:///system net-autostart private
 
 virsh --connect qemu:///system net-dumpxml private > private.xml
 
-<network connections='1' ipv6='yes'>
+<network connections='1' ipv6='no'>
   <name>private</name>
   <uuid>dc59ead7-c22c-460d-a09b-2c44b47e9b51</uuid>
   <bridge name='virbr1' stp='on' delay='0'/>
@@ -275,12 +275,16 @@ virt-clone --connect=qemu:///system -o fuse-dev_libvirt -n fuse-dev_libvirt_bk -
 
 # Export the VM config
 
+To export the configuration of the VM, simply run this virsh command
+
 [source]
 ----
 virsh --connect qemu:///system dumpxml fuse-dev_libvirt > fuse-dev_libvirt_config.xml
 ----
 
 # Import the VM image using the Config File
+
+Every VM can be recreated using its XML Configuration file containing the defintion of the VM, cpus, memory, location of the RAW image, ...
 
 [source]
 ----
@@ -291,6 +295,8 @@ virsh --connect qemu:///system start fuse-dev_libvirt
 
 # Convert to qcow2 & import it
 
+In order to have an image that we can reuse to create a Virtual Machine, we will convert the raw image of the existing VM and convert it to the qcow2 fiormat. Next, we will delete any domain (= virutal machine) already registered and recreate a new VM using the command `virt-install`
+
 [source]
 ----
 sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse-dev_libvirt.qcow2
@@ -298,10 +304,12 @@ sudo qemu-img convert -O qcow2 /var/lib/libvirt/images/fuse-dev_libvirt.img fuse
 virsh --connect qemu:///system shutdown fuse-dev
 virsh --connect qemu:///system undefine fuse-dev
 
-virt-install --connect qemu:///system --name=fuse-dev --virt-type=kvm --ram=2048 --os-type=linux --os-variant=fedora22 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --network bridge=virbr0 --vnc --noautoconsole --import --check all=off
+virt-install --connect qemu:///system --name=fuse-dev --virt-type=kvm --ram=2048 --os-type=linux --os-variant=fedora22 --disk path=fuse-dev_libvirt.qcow2,device=disk,format=qcow2 --vcpus=2 --network network=default --network network=private --vnc --noautoconsole --import --check all=off
 ---- 
 
 # Connect to the console of the VM
+
+Every VM running within KVM/QEMU can be accessed using the option `console` of the command `virsh`. This command allows yoiu to check the configuration of the VM and its networks if you can't access it.
 
 [source]
 ----

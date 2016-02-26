@@ -19,6 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # Configure private network between the guest and the host
     cfg.vm.network :private_network, 
         :ip => "172.28.128.4",
+        :mac => "52:54:00:88:10:6d",
         :libvirt__network_name => "private"
   end
 
