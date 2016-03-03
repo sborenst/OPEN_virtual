@@ -20,7 +20,7 @@ echo "==========================================================================
 
 # Install Git, Wget, Unzip Tools
 echo 'Install git, wget, unzip'
-sudo yum -y install wget git unzip nfs-utils bind-utils
+sudo yum -y install wget git unzip nfs-utils bind-utils telnet
 
 # Install Open JDK 8 (Dev)
 echo "Download and install OpenJDK 8"
