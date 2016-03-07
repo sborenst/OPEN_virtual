@@ -7,8 +7,10 @@ A DNS server will be configured on your host machine to simplify the access to t
 
 As depicted within the following diagram, 2 networks adapters have bee configured; one using NAT and the other using the Host Only Adapter of VirtualBox.
 
-* The NAT adapter will used to ssh the machine using this command `ssh vagrant@localhost -p 2222` from the host to guest while
+* The NAT adapter will be used to ssh the machine using the ssh command `ssh vagrant@localhost -p 2222` from the host to guest while
 * The private network will help you to access the docker daemon or docker processes exposed using the address `172.128.28.1`
+
+TIP: The user/password to be used to access the Linux VM machine and also to perform sudo commands is `vagrant/vagrant`
 
 image::image/vms.png[width="60%"]
 
