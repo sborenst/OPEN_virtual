@@ -35,11 +35,11 @@ In order to use the virtual machine created by Vagrant with the Virtualbox provi
 
 # SSH to the guest machine
 
-    vagrant ssh
+    vagrant ssh or ssh vagrant@localhost -p 2222
 
 TIP: The user/password to be used is `vagrant/vagrant`
 
-# Access Docker daemon fro mthe host
+# Access Docker daemon from the host
 
 In order to access the guest machine from the host machine, an ENV variable must be created with the ip address or hostname of the docker daemon.
 
