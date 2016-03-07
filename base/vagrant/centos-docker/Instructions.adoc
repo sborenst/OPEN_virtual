@@ -5,11 +5,11 @@ TODO
 
 # Setup Vagrant
 
-. Follow the instructions described on the https://www.vagrantup.com/docs/installation/[Vagrant web site] in order to install Vagrant Tool
+Follow the instructions described on the https://www.vagrantup.com/docs/installation/[Vagrant web site] in order to install Vagrant Tool
 
 # Create the Virtual Machine
 
-In order to use the virtual machine created by Vagrant with theVirtualbox provider, it is required that follow these instructions
+In order to use the virtual machine created by Vagrant with theVirtualbox provider, it is required that you follow these instructions
 
 . Download the `OPEN_virtual` https://github.com/redhat-gpe/OPEN_virtual/archive/master.zip[project] or git https://github.com/redhat-gpe/OPEN_virtual.git[clone it].
 . Next, create a directory from where you will use Vagrant to create the Virtual Machine
@@ -17,7 +17,7 @@ In order to use the virtual machine created by Vagrant with theVirtualbox provid
     mkdir centos-docker
     cd centos-docker
 
-. Copy/paste the `Vagrantfile` and laucnh Vagrant
+. Copy/paste the `Vagrantfile` and launch Vagrant
 
     cp /path/to/Vagrantfile .
     vagrant up
