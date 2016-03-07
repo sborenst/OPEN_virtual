@@ -3,11 +3,11 @@
 
 VAGRANTFILE_API_VERSION = "2"
 
-$vmMemory = ENV['FUSE_VM_MEMORY'] || 3000
+$vmMemory = ENV['VM_MEMORY'] || 3000
 $mavenVersion = ENV['MAVEN_VERSION'] || "3.2.3"
 $javaPackage = ENV['JAVA_PKG'] || "java-1.8.0-openjdk-devel.x86_64"
 $javaVersion = ENV['JAVA_VERSION'] || "java-1.8.0"
-$hostname = "centos7-docker"
+$hostname = "docker"
 $pluginToCheck = "landrush"
 
 unless Vagrant.has_plugin?($pluginToCheck)
@@ -17,7 +17,7 @@ end
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Top level domain
-  $tld = "vagrant.f8"
+  $tld = "vagrant.vm"
   $fullName = $hostname + "." + $tld
 
   # Landrush DNS Setup
