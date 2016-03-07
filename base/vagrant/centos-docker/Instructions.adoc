@@ -19,7 +19,7 @@ In order to use the virtual machine created by Vagrant with theVirtualbox provid
 
 . Copy/paste the `Vagrantfile` and launch Vagrant
 
-    cp /path/to/Vagrantfile .
+    cp /path/to/OPEN_virtual/base/vagrant/centos-docker/Vagrantfile/Vagrantfile .
     vagrant up
 
 # SSH to the machine
