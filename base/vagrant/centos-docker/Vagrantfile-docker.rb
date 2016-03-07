@@ -7,7 +7,7 @@ $vmMemory = ENV['FUSE_VM_MEMORY'] || 3000
 $mavenVersion = ENV['MAVEN_VERSION'] || "3.2.3"
 $javaPackage = ENV['JAVA_PKG'] || "java-1.8.0-openjdk-devel.x86_64"
 $javaVersion = ENV['JAVA_VERSION'] || "java-1.8.0"
-$hostname = "centos7-docker"
+$hostname = "centos7"
 $pluginToCheck = "landrush"
 
 unless Vagrant.has_plugin?($pluginToCheck)
@@ -29,8 +29,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Add the hostname to the DNS domain
   config.vm.hostname = $fullName
 
-  config.vm.box = "jimmidyson/centos-7.1"
-  config.vm.box_version = "1.2.6"
+  config.vm.box = "centos/7"
 
   config.vm.network "private_network", ip: "172.28.128.4"
 
@@ -54,5 +53,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     s.keep_color = true
     s.args       = [$vmMemory,$mavenVersion,$javaPackage,$javaVersion]
   end
+
+  # Install Docker Daemon & Client
+  config.vm.provision "shell", path: "docker-install.sh"
 
 end
