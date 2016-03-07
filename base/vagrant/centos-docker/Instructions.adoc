@@ -20,10 +20,10 @@ Follow the instructions described on the https://www.vagrantup.com/docs/installa
 
 # Create the Virtual Machine
 
-In order to use the virtual machine created by Vagrant with theVirtualbox provider, it is required that you follow these instructions
+In order to use the virtual machine created by Vagrant with the Virtualbox provider, it is required that you follow these instructions
 
 . Download the `OPEN_virtual` https://github.com/redhat-gpe/OPEN_virtual/archive/master.zip[project] or git https://github.com/redhat-gpe/OPEN_virtual.git[clone it].
-. Next, create a directory from where you will use Vagrant to create the Virtual Machine
+. Next, create a directory from where you would like to use Vagrant to create the Virtual Machine
 
     mkdir centos-docker
     cd centos-docker
