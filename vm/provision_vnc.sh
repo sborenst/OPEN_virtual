@@ -148,6 +148,10 @@ function provisionNginxWithKerberos() {
     git clone https://github.com/stnoonan/spnego-http-auth-nginx-module.git
     dnf groupinstall "Development Tools"
     dnf install pcre-devel zlib-devel heimdal-devel krb5-devel
+
+    # http://nginx.org/en/docs/configure.html
+    # https://github.com/stnoonan/spnego-http-auth-nginx-module
+    ./configure --add-module=spnego-http-auth-nginx-module
     make install
 
     mkdir -r /usrc/local/nginx/default.d
