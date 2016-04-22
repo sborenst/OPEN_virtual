@@ -1,11 +1,20 @@
 #!/bin/bash
 
+# Purpose:
+#   Provision a Fedora 23 OS using LXDE window manager with tools needed to allow for remote desktop access using any HTML5 enabled browser
+#
+# Tools installed and configured by this script:
+#   1) tigervnc-server
+#   2) docker
+#   3) guacd (server)
+#   4) guacamole (web app)
+#   5) nginx
+
 myuser="jboss"
 vncpass="jb0ssredhat!"
 guacd_name="guacd"
 guac_version="0.9.9"
 hostname=`hostname`
-path_to_guac_war="/root/guacamole-$guac_version.war"
 
 lxde_monitor="#!/bin/sh
 # Uncomment the following two lines for normal desktop:
@@ -37,6 +46,16 @@ guac_user_mapping="<user-mapping>
     </authorize>
 </user-mapping>"
 
+nginx_location_config="location /guacamole/ {
+    proxy_pass http://$hostname:8080/guacamole/;
+    proxy_buffering off;
+    proxy_http_version 1.1;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection $http_connection;
+    access_log off;
+}"
+
 
 function provisionTigerVNC() {
 
@@ -55,8 +74,12 @@ function provisionTigerVNC() {
     chmod -R 755 /home/$myuser/.vnc
     chmod 0600 /home/$myuser/.vnc/passwd
 
-    systemctl enable vncserver@:1.service
-    systemctl start vncserver@:1.service
+    if [ "`systemctl is-active vncserver@:1.service`" != "active" ]
+    then
+        systemctl enable vncserver@:1.service
+        systemctl start vncserver@:1.service
+    fi
+    echo "status of vncserver@:1.service is: `systemctl is-active vncserver@:1.service`"
 }
 
 function provisionGuacd() {
@@ -64,9 +87,13 @@ function provisionGuacd() {
     echo -en "\nprovisionGuacd() ...\n"
 
     dnf install -y docker
-    systemctl start docker.service
-    systemctl enable docker.service
-    docker run --name $guacd_name --restart=on-failure:5 -d -p 4822:4822 glyptodon/guacd
+    if [ "`systemctl is-active docker.service`" != "active" ]
+    then
+        systemctl start docker.service
+        systemctl enable docker.service
+        docker run --name $guacd_name --restart=on-failure:5 -d -p 4822:4822 glyptodon/guacd
+    fi
+    echo "status of docker is: `systemctl is-active docker.service`"
 }
 
 function provisionGuacamole() {
@@ -75,6 +102,15 @@ function provisionGuacamole() {
 
     echo -en "\nprovisionGuacamole() ...\n"
     dnf install -y tomcat tomcat-webapps
+
+    path_to_guac_war="/root/guacamole-$guac_version.war"
+    path_to_guac_auth_ldap="/root/guacamole-$guac_version.tar.gz"
+
+    if [ ! -f $path_to_guac_war ]; then
+        wget http://sourceforge.net/projects/guacamole/files/current/binary/guacamole-$guac_version.war -O $path_to_guac_war
+        wget http://sourceforge.net/projects/guacamole/files/current/extensions/guacamole-auth-ldap-$guac_version.tar.gz $path_to_guac_auth_ldap
+    fi
+
     mkdir -p /etc/guacamole/ /var/lib/guacamole /usr/share/tomcat/.guacamole
 
     cp $path_to_guac_war /var/lib/guacamole/guacamole.war
@@ -85,15 +121,49 @@ function provisionGuacamole() {
     ln -sf /etc/guacamole/guacamole.properties /usr/share/tomcat/.guacamole/
     chown -R tomcat:tomcat /usr/share/tomcat/.guacamole
 
-    systemctl start tomcat.service
-    systemctl enable tomcat.service
+    if [ "`systemctl is-active tomcat.service`" != "active" ]
+    then
+        systemctl start tomcat.service
+        systemctl enable tomcat.service
+    fi
+    echo "status of tomcat is: `systemctl is-active tomcat.service`"
 }
 
-function provisionHttpd() {
-    echo -en "\nprovisionHttpd() ...\n"
+function provisionNginx() {
+    echo -en "\nprovisionNginx() ...\n"
+    dnf install -y nginx
+    printf '%s\n' "$nginx_location_config" > /etc/nginx/default.d/guacamole.conf
+    if [ "`systemctl is-active nginx.service`" != "active" ]
+    then
+        systemctl start nginx.service
+        systemctl enable nginx.service
+    fi
+    echo "status of nginx is: `systemctl is-active nginx.service`"
+}
+
+function provisionNginxWithKerberos() {
+    wget http://nginx.org/download/nginx-1.9.15.tar.gz
+    tar -zxvf nginx-1.9.15.tar.gz
+    cd nginx-1.9.15
+    git clone https://github.com/stnoonan/spnego-http-auth-nginx-module.git
+    dnf groupinstall "Development Tools"
+    dnf install pcre-devel zlib-devel heimdal-devel krb5-devel
+    make install
+
+    mkdir -r /usrc/local/nginx/default.d
+    printf '%s\n' "$nginx_location_config" > /etc/nginx/default.d/guacamole.conf
+
+    cp nginx.service /usr/lib/systemd/system/nginx.service
+    if [ "`systemctl is-active nginx.service`" != "active" ]
+    then
+        systemctl start nginx.service
+        systemctl enable nginx.service
+    fi
+    echo "status of nginx is: `systemctl is-active nginx.service`"
 }
 
 provisionTigerVNC
 provisionGuacd
 provisionGuacamole
-#provisionHttpd
+#provisionNginx
+provisionNginxWithKerberos
