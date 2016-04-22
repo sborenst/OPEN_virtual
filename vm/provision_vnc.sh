@@ -52,6 +52,7 @@ function provisionTigerVNC() {
     echo $vncpass | vncpasswd -f > /home/$myuser/.vnc/passwd
     printf '%s\n' "$lxde_monitor" > /home/$myuser/.vnc/xstartup
     chown -R $myuser:$myuser /home/$myuser/.vnc
+    chmod -R 755 /home/$myuser/.vnc
     chmod 0600 /home/$myuser/.vnc/passwd
 
     systemctl enable vncserver@:1.service
@@ -73,7 +74,7 @@ function provisionGuacamole() {
     # https://deviantengineer.com/2015/02/guacamole-centos7/
 
     echo -en "\nprovisionGuacamole() ...\n"
-    yum install -y tomcat tomcat-webapps
+    dnf install -y tomcat tomcat-webapps
     mkdir -p /etc/guacamole/ /var/lib/guacamole /usr/share/tomcat/.guacamole
 
     cp $path_to_guac_war /var/lib/guacamole/guacamole.war
