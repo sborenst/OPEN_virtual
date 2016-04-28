@@ -1,4 +1,4 @@
-FROM centos:centos7
+FROM centos:centos7.2.1511
 
 # JA Bride
 # sudo docker build --rm=true -t rhtgptetraining/jenkins-ose-dev .

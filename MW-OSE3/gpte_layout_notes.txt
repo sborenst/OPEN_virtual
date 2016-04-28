@@ -29,6 +29,7 @@ VMs :
         - root operating system user
             - sudo -i
             - oc utility registered as OSE cluster admin
+        - Includes /opt/OPEN_virtual repo
     master00-ml.opentlc.com :
         - Runs the openshift-master and provides the API interface on port 8443
         - Includes /opt/OPEN_virtual repo
