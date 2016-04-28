@@ -3,8 +3,8 @@ FROM centos:centos7.2.1511
 # JA Bride
 # sudo docker build --rm=true -t rhtgptetraining/jenkins-ose-dev .
 # sudo docker run -i -t rhtgptetraining/jenkins-ose-dev
-# sudo docker tag -f rhtgptetraining/jenkins-ose-dev infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
-# sudo docker push infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
+# sudo docker tag -f rhtgptetraining/jenkins-ose-dev infranode00-ml.localdomain:5000/redhat-gpe/jenkins-ose-dev
+# sudo docker push infranode00-ml.localdomain:5000/redhat-gpe/jenkins-ose-dev
 
 # Jenkins image for OpenShift
 #

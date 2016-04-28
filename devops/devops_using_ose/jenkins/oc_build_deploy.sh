@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -z "$1" ]; then
-    OPENSHIFT_API_URL=https://master00-mwl.opentlc.com:8443
+    OPENSHIFT_API_URL=https://master00-ml.opentlc.com:8443
 else
     OPENSHIFT_API_URL=$1
 fi
