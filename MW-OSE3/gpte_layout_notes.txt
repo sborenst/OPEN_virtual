@@ -29,9 +29,9 @@ VMs :
         - root operating system user
             - sudo -i
             - oc utility registered as OSE cluster admin
-        - Includes /opt/OPEN_virtual repo
     master00-ml.opentlc.com :
         - Runs the openshift-master and provides the API interface on port 8443
+        - Includes /opt/OPEN_virtual repo
     infranode00-ml.opentlc.com :
         - Provides the router, has inbound HTTP/HTTPS enabled, answers for *.cloudapps.mwl.opentlc.com, runs the openshift docker registry.
         - Hosts GPTE Docker registry (v1)
