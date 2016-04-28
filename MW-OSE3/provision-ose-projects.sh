@@ -13,7 +13,7 @@
 #
 #   3)  Client that invokes this script is in CloudForms ruby code written by Patrick
 
-PATH_TO_OPENTLC_OSE3=/opt/OPEN_Admin/OPENTLC-OSE3
+PATH_TO_OPENTLC_OSE3=/opt/OPEN_virtual/OPENTLC-OSE3
 DEVOPS_USING_OSE=DEVOPS_USING_OSE
 AMQ=AMQ
 BPMS=BPMS
