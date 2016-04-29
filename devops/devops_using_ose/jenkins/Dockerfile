@@ -98,6 +98,8 @@ RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-input-step.hpi     
 RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-stage-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-stage-step.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/structs.hpi                     http://updates.jenkins-ci.org/latest/structs.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/parameterized-trigger.hpi       http://updates.jenkins-ci.org/latest/parameterized-trigger.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/branch-api.hpi                  http://updates.jenkins-ci.org/latest/branch-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/cloudbees-folder.hpi            http://updates.jenkins-ci.org/latest/cloudbees-folder.hpi
 
 # checkPort.sh and oc_build_deploy.sh support groovy based pipeline job
 COPY ./checkPort.sh /usr/local/bin/checkPort.sh
