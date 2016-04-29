@@ -40,12 +40,12 @@ RUN curl http://pkg.jenkins-ci.org/redhat/jenkins.repo -o /etc/yum.repos.d/jenki
     chmod og+rw /var/lib/jenkins
 
 # JA Bride:  adding needed git plugin
-RUN curl -L -o /opt/openshift/configuration/plugins/git.hpi http://updates.jenkins-ci.org/latest/git.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/git-client.hpi http://updates.jenkins-ci.org/latest/git-client.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/scm-api.hpi http://updates.jenkins-ci.org/latest/scm-api.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/ssh-credentials.hpi http://updates.jenkins-ci.org/latest/ssh-credentials.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/credentials.hpi http://updates.jenkins-ci.org/latest/credentials.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi http://updates.jenkins-ci.org/latest/mailer.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/git.hpi                             http://updates.jenkins-ci.org/latest/git.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/git-client.hpi                      http://updates.jenkins-ci.org/latest/git-client.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/scm-api.hpi                         http://updates.jenkins-ci.org/latest/scm-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/ssh-credentials.hpi                 http://updates.jenkins-ci.org/latest/ssh-credentials.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/credentials.hpi                     http://updates.jenkins-ci.org/latest/credentials.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                          http://updates.jenkins-ci.org/latest/mailer.hpi
 
 # JA Bride:  adding delivery-pipeline plugin
 RUN curl -L -o /opt/openshift/configuration/plugins/delivery-pipeline-plugin.hpi       https://updates.jenkins-ci.org/download/plugins/delivery-pipeline-plugin/0.9.7/delivery-pipeline-plugin.hpi
@@ -92,6 +92,12 @@ RUN curl -L -o /opt/openshift/configuration/plugins/workflow-job.hpi            
 RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                      http://updates.jenkins-ci.org/latest/mailer.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-basic-steps.hpi        http://updates.jenkins-ci.org/latest/workflow-basic-steps.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-aggregator.hpi         http://updates.jenkins-ci.org/latest/workflow-aggregator.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-multibranch.hpi        http://updates.jenkins-ci.org/latest/workflow-multibranch.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-build-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-build-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-input-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-input-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-stage-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-stage-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/structs.hpi                     http://updates.jenkins-ci.org/latest/structs.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/parameterized-trigger.hpi       http://updates.jenkins-ci.org/latest/parameterized-trigger.hpi
 
 # checkPort.sh and oc_build_deploy.sh support groovy based pipeline job
 COPY ./checkPort.sh /usr/local/bin/checkPort.sh
