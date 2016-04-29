@@ -93,9 +93,9 @@ RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                  
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-basic-steps.hpi        http://updates.jenkins-ci.org/latest/workflow-basic-steps.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-aggregator.hpi         http://updates.jenkins-ci.org/latest/workflow-aggregator.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-multibranch.hpi        http://updates.jenkins-ci.org/latest/workflow-multibranch.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-build-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-build-step.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-input-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-input-step.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-stage-step .hpi        http://updates.jenkins-ci.org/latest/pipeline-stage-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-build-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-build-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-input-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-input-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-stage-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-stage-step.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/structs.hpi                     http://updates.jenkins-ci.org/latest/structs.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/parameterized-trigger.hpi       http://updates.jenkins-ci.org/latest/parameterized-trigger.hpi
 
