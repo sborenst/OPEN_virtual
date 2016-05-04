@@ -13,7 +13,7 @@ nfsserver="inf00-mwl.opentlc.com"
 pvnfspath="/exports/pvs"
 
 # Subnet for NFS ACL
-subnet="192.168.0.0/16"
+subnet="172.31.0.0/16"
 
 # NFS export share config file
 nfsexport="/etc/exports.d/pvs.exports"
