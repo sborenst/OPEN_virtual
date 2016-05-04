@@ -10,7 +10,7 @@
         <hudson.model.StringParameterDefinition>
           <name>OSE_NEXUS_HOST</name>
           <description>Hostname of Nexus</description>
-          <defaultValue>inf00-mwl.opentlc.com</defaultValue>
+          <defaultValue>nexus.ml.opentlc.com</defaultValue>
         </hudson.model.StringParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>

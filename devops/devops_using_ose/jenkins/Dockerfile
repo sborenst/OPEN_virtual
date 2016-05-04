@@ -1,10 +1,10 @@
-FROM centos:centos7
+FROM centos:centos7.2.1511
 
 # JA Bride
 # sudo docker build --rm=true -t rhtgptetraining/jenkins-ose-dev .
 # sudo docker run -i -t rhtgptetraining/jenkins-ose-dev
-# sudo docker tag -f rhtgptetraining/jenkins-ose-dev infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
-# sudo docker push infranode00-mwl.localdomain:5000/redhat-gpe/jenkins-ose-dev
+# sudo docker tag -f rhtgptetraining/jenkins-ose-dev infranode00-ml.localdomain:5000/redhat-gpe/jenkins-ose-dev
+# sudo docker push infranode00-ml.localdomain:5000/redhat-gpe/jenkins-ose-dev
 
 # Jenkins image for OpenShift
 #
@@ -40,12 +40,12 @@ RUN curl http://pkg.jenkins-ci.org/redhat/jenkins.repo -o /etc/yum.repos.d/jenki
     chmod og+rw /var/lib/jenkins
 
 # JA Bride:  adding needed git plugin
-RUN curl -L -o /opt/openshift/configuration/plugins/git.hpi http://updates.jenkins-ci.org/latest/git.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/git-client.hpi http://updates.jenkins-ci.org/latest/git-client.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/scm-api.hpi http://updates.jenkins-ci.org/latest/scm-api.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/ssh-credentials.hpi http://updates.jenkins-ci.org/latest/ssh-credentials.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/credentials.hpi http://updates.jenkins-ci.org/latest/credentials.hpi
-RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi http://updates.jenkins-ci.org/latest/mailer.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/git.hpi                             http://updates.jenkins-ci.org/latest/git.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/git-client.hpi                      http://updates.jenkins-ci.org/latest/git-client.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/scm-api.hpi                         http://updates.jenkins-ci.org/latest/scm-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/ssh-credentials.hpi                 http://updates.jenkins-ci.org/latest/ssh-credentials.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/credentials.hpi                     http://updates.jenkins-ci.org/latest/credentials.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                          http://updates.jenkins-ci.org/latest/mailer.hpi
 
 # JA Bride:  adding delivery-pipeline plugin
 RUN curl -L -o /opt/openshift/configuration/plugins/delivery-pipeline-plugin.hpi       https://updates.jenkins-ci.org/download/plugins/delivery-pipeline-plugin/0.9.7/delivery-pipeline-plugin.hpi
@@ -67,7 +67,7 @@ RUN curl -L -o /tmp/apache-maven.tar.gz http://ftp.wayne.edu/apache/maven/maven-
 ENV PATH=/opt/apache-maven-$MAVEN_VERSION/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/sbin:/usr/sbin
 
 # JA Bride:  installing nodejs and npm to support CI of javascript apps
-RUN rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-5.noarch.rpm && \
+RUN rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
     yum install -y nodejs npm && \
     yum clean all
 
@@ -92,6 +92,14 @@ RUN curl -L -o /opt/openshift/configuration/plugins/workflow-job.hpi            
 RUN curl -L -o /opt/openshift/configuration/plugins/mailer.hpi                      http://updates.jenkins-ci.org/latest/mailer.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-basic-steps.hpi        http://updates.jenkins-ci.org/latest/workflow-basic-steps.hpi
 RUN curl -L -o /opt/openshift/configuration/plugins/workflow-aggregator.hpi         http://updates.jenkins-ci.org/latest/workflow-aggregator.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/workflow-multibranch.hpi        http://updates.jenkins-ci.org/latest/workflow-multibranch.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-build-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-build-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-input-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-input-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/pipeline-stage-step.hpi         http://updates.jenkins-ci.org/latest/pipeline-stage-step.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/structs.hpi                     http://updates.jenkins-ci.org/latest/structs.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/parameterized-trigger.hpi       http://updates.jenkins-ci.org/latest/parameterized-trigger.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/branch-api.hpi                  http://updates.jenkins-ci.org/latest/branch-api.hpi
+RUN curl -L -o /opt/openshift/configuration/plugins/cloudbees-folder.hpi            http://updates.jenkins-ci.org/latest/cloudbees-folder.hpi
 
 # checkPort.sh and oc_build_deploy.sh support groovy based pipeline job
 COPY ./checkPort.sh /usr/local/bin/checkPort.sh
