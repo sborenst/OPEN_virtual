@@ -4,7 +4,7 @@
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=stauilrh --course=BPMS               		:   Creates new BPM project for user: stauilrh
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -r --user=stauilrh --course=BPMS               		:   Removes BPM project for user:  stauilrh
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=jbride-redhat.com --course=AMQ       		:   Creates new AMQ project for user: jbride-redhat.com
-#     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=jbride-redhat.com --course=APPDEV_OSE     	:   Creates new App Dev Using OSE project for user: jbride-redhat.com
+#     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=jbride-redhat.com --course=OSE_APPDEV     	:   Creates new App Dev Using OSE project for user: jbride-redhat.com
 
 #   ADMIN NOTES:
 #   This script is installed at:  opentlc-mgr@inf00-mwl.opentlc.com:/home/opentlc-mgr/bin/provision-ose-projects.sh
@@ -15,14 +15,14 @@
 #   3)  Client that invokes this script is in CloudForms ruby code written by Patrick
 
 PATH_TO_OPENTLC_OSE3=/opt/OPEN_virtual/MW-OSE3
-APPDEV_OSE=APPDEV_OSE
+OSE_APPDEV=OSE_APPDEV
 AMQ=AMQ
 BPMS=BPMS
 JDV_DEV=JDV_DEV
 LOG_FILE=/tmp/ose_provision.log
 
 declare -A COURSES
-COURSES=(["APPDEV_OSE"]=1 ["BPMS"]=2 ["JDV_DEV"]=2 ["AMQ"]=1)
+COURSES=(["OSE_APPDEV"]=1 ["BPMS"]=2 ["JDV_DEV"]=2 ["AMQ"]=1)
 
 ADD=false
 REMOVE=false
@@ -99,7 +99,7 @@ app_provision() {
         oc new-app --template=gpe-bpm-biz-logic-dev-template -p APPLICATION_NAME=gpe-bpms -p DATABASE_SERVICE_NAME=gpe-bpm-mysql -n $PROJECTNAME
     elif [ "$COURSENAME" = "$JDV_DEV" ] ; then
         oc new-app --template=gpe-jdv-pgsql-template -p DATABASE_SERVICE_NAME=gpe-jdv-pgsql -n $PROJECTNAME
-    elif [ "$COURSENAME" = "APPDEV_OSE" ] ; then
+    elif [ "$COURSENAME" = "OSE_APPDEV" ] ; then
         # No need to instantiate an app
         # Instead, provide persistence volume claim
         pvc_provision
