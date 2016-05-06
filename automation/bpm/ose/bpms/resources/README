@@ -1,0 +1,1 @@
+The binary ZIP files to build up the image should be placed in this directory, they will not be pushed to the repository as zip file extension is added to the gitignore file.

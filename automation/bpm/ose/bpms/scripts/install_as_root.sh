@@ -3,8 +3,8 @@
 set -e
 
 SCRIPTS_DIR=$(dirname $0)
-EAP_DISTRIBUTION_ZIP=jboss-eap-6.4.4-full-build.zip
-BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.2.0.GA-deployable-eap6.x.zip
+EAP_DISTRIBUTION_ZIP=jboss-eap-6.4.6-full-build.zip
+BPMS_DISTRIBUTION_ZIP=jboss-bpmsuite-6.3.0.GA-deployable-eap6.x.zip
 EAP_VERSION=6.4
 
 MAVEN_REPO_DIR=$JBOSS_BPMS_DATA/m2/repository
@@ -32,6 +32,10 @@ mv jboss-eap-$EAP_VERSION $JBOSS_HOME
 
 echo "Remove org.kie.example"
 sed -i 's/property name="org.kie.example" value="true"/property name="org.kie.example" value="false"/' $JBOSS_HOME/standalone/configuration/standalone.xml
+
+# workaround for the issue with urn 1.8 https://issues.jboss.org/browse/JBEAP-4434
+echo "Workaround for issue JBEAP-4434"
+sed -i 's/server xmlns="urn:jboss:domain:1.8"/server xmlns="urn:jboss:domain:1.7"/' $JBOSS_HOME/standalone/configuration/standalone.xml
 
 echo "set system variables for maven and git repos"
 echo $'\n' >> $SERVER_INSTALL_DIR/$SERVER_NAME/bin/standalone.conf
