@@ -1,1 +1,6 @@
-The binary ZIP files to build up the image should be placed in this directory, they will not be pushed to the repository as zip file extension is added to the gitignore file.
+The binary ZIP files to build up the image should be placed in this directory.
+Specifically:
+  1) jboss-bpmsuite-6.3.0.GA-deployable-eap6.x.zip
+  2) jboss-eap-6.4.6-full-build.zip
+
+These binaries will not be version controlled in this repository:  a zip file extension is included in the .gitignore file.

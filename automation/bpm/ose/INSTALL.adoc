@@ -1,0 +1,34 @@
+. Ensure a docker registry has been installed in your OSE3 environment
++
+NOTE: for the purposes of this guide, this docker registry is located at: infranode00-ml.localdomain:5000
+
+. copy needed BPM Suite artifacts to this project
+.. cp jboss-bpmsuite-6.3.0.GA-deployable-eap6.x.zip   OPEN_virtual/automation/bpm/ose/bpms/resources
+.. cp jboss-eap-6.4.6-full-build.zip   OPEN_virtual/automation/bpm/ose/bpms/resources
+
+. build base images
+.. cd OPEN_virtual/base/docker/
+.. docker build --rm=true -t redhat-gpe/jboss-base base
+.. docker build --rm=true -t redhat-gpe/jboss-base-jdk8 base-jdk8
+
+. build and push mysql image
+.. cd OPEN_virtual/automation/bpm/ose/
+.. docker build --rm=true -t redhat-gpe/bpms-mysql mysql
+.. docker tag -f redhat-gpe/bpms-mysql infranode00-mwl.localdomain:5000/redhat-gpe/bpms-mysql
+.. docker push infranode00-mwl.localdomain:5000/redhat-gpe/bpms-mysql
+
+. build bpms image
+.. cd OPEN_virtual/automation/bpm/ose/
+.. docker build --rm=true -t redhat-gpe/bpms bpms
+
+. build biz_logic_dev_with_bpms image
+.. cd OPEN_virtual/automation/bpm/ose/
+.. docker build --rm=true -t redhat-gpe/biz_logic_dev  biz_logic_dev_with_bpms
+.. docker tag -f redhat-gpe/biz_logic_dev infranode00-ml.localdomain:5000/redhat-gpe/biz_logic_dev
+.. docker push infranode00-ml.localdomain:5000/redhat-gpe/biz_logic_dev
+
+. register templates in `openshift` namespace of OSE
+.. change the value of `REDHAT_GPTE_DOCKER_REG_URL` environment variable in: OPEN_virtual/automation/bpm/ose/mysql/gpe-bpm-mysql.json
+.. oc create -f OPEN_virtual/automation/bpm/ose/mysql/gpe-bpm-mysql.json -n openshift
+.. change the value of `REDHAT_GPTE_DOCKER_REG_URL` environment variable in: OPEN_virtual/automation/bpm/ose/biz_logic_dev_with_bpms/gpe-bpm-biz_logic_dev_with_bpms.json
+.. oc create -f OPEN_virtual/automation/bpm/ose/biz_logic_dev_with_bpms/gpe-bpm-biz_logic_dev_with_bpms.json -n openshift

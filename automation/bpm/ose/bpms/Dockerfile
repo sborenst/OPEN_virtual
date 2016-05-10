@@ -1,6 +1,6 @@
 # docker build --rm=true -t redhat-gpe/bpms .
-# docker tag -f redhat-gpe/bpms infranode00-mwl.localdomain:5000/redhat-gpe/bpms
-# docker push infranode00-mwl.localdomain:5000/redhat-gpe/bpms
+# docker tag -f redhat-gpe/bpms infranode00-ml.localdomain:5000/redhat-gpe/bpms
+# docker push infranode00-ml.localdomain:5000/redhat-gpe/bpms
 # docker run -d --name="gpe-bpm-bpms" --link=gpe-bpm-mysql:mysql redhat-gpe/bpms
 
 FROM redhat-gpe/jboss-base-jdk8:latest

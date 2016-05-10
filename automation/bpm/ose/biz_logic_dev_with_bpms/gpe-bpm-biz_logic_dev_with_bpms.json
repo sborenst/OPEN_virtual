@@ -214,7 +214,7 @@
         {
             "name": "REDHAT_GPTE_DOCKER_REG_URL",
             "description": "URL of partner accessible Red Hat GPTE Docker Registry",
-            "value": "infranode00-mwl.localdomain:5000",
+            "value": "infranode00-ml.localdomain:5000",
             "required": true
         },
         {

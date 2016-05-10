@@ -3,8 +3,8 @@
 
 # Usage
 #   docker build --rm=true -t redhat-gpe/biz_logic_dev .
-#   docker tag -f redhat-gpe/biz_logic_dev infranode00-mwl.localdomain:5000/redhat-gpe/biz_logic_dev
-#   docker push infranode00-mwl.localdomain:5000/redhat-gpe/biz_logic_dev
+#   docker tag -f redhat-gpe/biz_logic_dev infranode00-ml.localdomain:5000/redhat-gpe/biz_logic_dev
+#   docker push infranode00-ml.localdomain:5000/redhat-gpe/biz_logic_dev
 #   docker run -d --name="gpe-biz-logic-dev" --link=gpe-bpm-mysql:mysql redhat-gpe/biz_logic_dev
 
 FROM redhat-gpe/bpms:latest
