@@ -5,6 +5,7 @@
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -r --user=stauilrh --course=BPMS               		:   Removes BPM project for user:  stauilrh
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=jbride-redhat.com --course=AMQ       		:   Creates new AMQ project for user: jbride-redhat.com
 #     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=jbride-redhat.com --course=OSE_APPDEV     	:   Creates new App Dev Using OSE project for user: jbride-redhat.com
+#     /home/opentlc-mgr/bin/provision-ose-projects.sh -a --user=sjayanti-redhat.com --course=FIS     		:   Creates new Fuse Integration Services project for user: sjayanti-redhat.com
 
 #   ADMIN NOTES:
 #   This script is installed at:  opentlc-mgr@inf00-mwl.opentlc.com:/home/opentlc-mgr/bin/provision-ose-projects.sh
@@ -18,11 +19,12 @@ PATH_TO_OPENTLC_OSE3=/opt/OPEN_virtual/MW-OSE3
 OSE_APPDEV=OSE_APPDEV
 AMQ=AMQ
 BPMS=BPMS
+FIS=FIS
 JDV_DEV=JDV_DEV
 LOG_FILE=/tmp/ose_provision.log
 
 declare -A COURSES
-COURSES=(["OSE_APPDEV"]=1 ["BPMS"]=2 ["JDV_DEV"]=2 ["AMQ"]=1)
+COURSES=(["OSE_APPDEV"]=1 ["BPMS"]=2 ["JDV_DEV"]=2 ["AMQ"]=1 ["FIS"]=0)
 
 ADD=false
 REMOVE=false
@@ -103,6 +105,9 @@ app_provision() {
         # No need to instantiate an app
         # Instead, provide persistence volume claim
         pvc_provision
+    elif [ "$COURSENAME" = "FIS" ] ; then
+        # No need to instantiate an app
+	sleep 0;
     elif [ "$COURSENAME" = "$AMQ" ] ; then
 
         # last updated from:  tag = ose-v1.3.0-1  ;      project = https://github.com/jboss-openshift/application-templates.git
