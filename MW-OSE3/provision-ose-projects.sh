@@ -78,13 +78,13 @@ determine_project_name() {
 }
 
 pvc_provision() {
-            for ((a=1; a <= ${COURSES["$course"]} ; a++))
-            do
-                cat $PATH_TO_OPENTLC_OSE3/persistent-volume-claim.json | sed 's/\("name": "\)[^"]*\("\)/\1claim'$a'\2/g' >> $PROJECTNAME-temp-pvc-claim.json
-                oc create -f $PROJECTNAME-temp-pvc-claim.json -n $PROJECTNAME
-                rm -f $PROJECTNAME-temp-pvc-claim.json
-            done
-            echo "Number of pvc: ${COURSES["$course"]}" >> $LOG_FILE
+    for ((a=1; a <= ${COURSES["$COURSENAME"]} ; a++))
+    do
+        cat $PATH_TO_OPENTLC_OSE3/persistent-volume-claim.json | sed 's/\("name": "\)[^"]*\("\)/\1claim'$a'\2/g' >> $PROJECTNAME-temp-pvc-claim.json
+        oc create -f $PROJECTNAME-temp-pvc-claim.json -n $PROJECTNAME
+        rm -f $PROJECTNAME-temp-pvc-claim.json
+    done
+    echo "$COURSENAME: Number of pvc: ${COURSES["$COURSENAME"]}" >> $LOG_FILE
 }
 
 project_provision() {
