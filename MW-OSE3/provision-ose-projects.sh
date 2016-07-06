@@ -15,6 +15,7 @@
 #
 #   Client that invokes this script is in CloudForms ruby code written by Patrick
 #   A new CloudForms "class" can be created via the following:  Automate -> Datastore -> OPEN -> OSELAB3 -> Class
+#   Policy:  Provisioning Scope /  Able to see all non ILT OPENTLC labs in catalog
 
 PATH_TO_OPENTLC_OSE3=/opt/OPEN_virtual/MW-OSE3
 OSE_APPDEV=OSE_APPDEV
