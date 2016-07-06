@@ -10,10 +10,11 @@
 #   ADMIN NOTES:
 #   This script is installed at:  opentlc-mgr@inf00-mwl.opentlc.com:/home/opentlc-mgr/bin/provision-ose-projects.sh
 #   It is invoked by CloudForms.  The CloudForms log file can be viewed as followed:
-#   1)  ssh <userId>@labs.opentlc.com
-#   2)  tail -n 50 /var/www/miq/vmdb/log/automation.log
+#       1)  ssh <userId>@labs.opentlc.com
+#       2)  tail -n 50 /var/www/miq/vmdb/log/automation.log
 #
-#   3)  Client that invokes this script is in CloudForms ruby code written by Patrick
+#   Client that invokes this script is in CloudForms ruby code written by Patrick
+#   A new CloudForms "class" can be created via the following:  Automate -> Datastore -> OPEN -> OSELAB3 -> Class
 
 PATH_TO_OPENTLC_OSE3=/opt/OPEN_virtual/MW-OSE3
 OSE_APPDEV=OSE_APPDEV
