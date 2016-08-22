@@ -1,0 +1,25 @@
+- hosts: bpms-advanced-infrastructure
+  remote_user: root
+
+  roles:
+    - update
+    - yum-clean
+    - reboot
+    - epel
+    - guest-additions
+    - useradd
+    - mate
+    - selinux
+    - tools
+    - zerofree
+    - java
+    - mariadb
+    - yum-clean
+    - maven
+    - maven-repo
+    - bpms
+    - bpms-ddl
+    - bpms-quartz
+    - rhsso
+    - rhsso-adapter
+    - rhsso-import

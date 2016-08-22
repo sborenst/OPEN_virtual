@@ -1,0 +1,11 @@
+---
+
+- name: Install X Window system
+  yum: name="@X Window system" state=present
+
+- name: Install MATE desktop
+  yum: name="@^MATE Desktop" state=present
+
+- name: Set default target
+  command: systemctl set-default graphical.target 
+

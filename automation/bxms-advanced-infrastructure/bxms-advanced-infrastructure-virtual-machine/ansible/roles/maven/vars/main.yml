@@ -1,0 +1,5 @@
+user: jboss
+mvn_install_dir: /home/jboss/lab
+install_script_dir: /opt/install/scripts
+mvn_distro: apache-maven-3.2.5-bin.zip
+mvn_root: apache-maven-3.2.5

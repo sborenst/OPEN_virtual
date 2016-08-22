@@ -1,0 +1,4 @@
+---
+
+- name : Copy zerofree
+  copy: src=install/ dest={{install_dir}} mode=0775

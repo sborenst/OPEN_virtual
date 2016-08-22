@@ -1,0 +1,3 @@
+---
+- name: Install packages for VirtualBox guest additions
+  yum: name=kernel-devel,dkms state=present

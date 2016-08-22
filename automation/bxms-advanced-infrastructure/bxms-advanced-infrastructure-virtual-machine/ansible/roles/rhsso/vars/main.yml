@@ -1,0 +1,15 @@
+user: jboss
+lab_home_dir: /home/jboss/lab
+rhsso_install_dir: /home/jboss/lab
+install_script_dir: /opt/install/scripts
+rhsso_install_script_dir: rhsso
+rhsso_resources_dir: resources
+rhsso_configuration_dir: configuration
+rhsso_install_script: install-rhsso-instance.sh
+rhsso_distro: rh-sso-7.0.0.zip
+rhsso_root_orig: rh-sso-7.0
+rhsso_mysql_schema: rhsso
+rhsso_mysql_user: jboss
+rhsso_mysql_password: jboss
+rhsso_mysql_driver: /usr/share/java/mysql-connector-java.jar
+rhsso_mysql_module: com/mysql

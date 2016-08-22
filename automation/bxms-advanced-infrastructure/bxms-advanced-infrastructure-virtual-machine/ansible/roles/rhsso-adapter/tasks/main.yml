@@ -1,0 +1,7 @@
+---
+
+- name: Create installation resources directory
+  file: path={{install_script_dir}}/{{rhsso_install_script_dir}}/{{rhsso_resources_dir}} state=directory mode=0755
+
+- name: Copy RH-SSO EAP6 adapter distro
+  copy: src={{rhsso_eap6_adapter_distro}} dest={{install_script_dir}}/{{rhsso_install_script_dir}}/{{rhsso_resources_dir}}

@@ -1,0 +1,4 @@
+---
+
+- name: Add jboss user
+  user: name={{user}} groups=wheel password={{password}}

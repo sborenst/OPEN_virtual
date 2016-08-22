@@ -1,0 +1,10 @@
+---
+
+- name: Create RH SSO import directory
+  file: path={{install_script_dir}}/{{rhsso_install_script_dir}}/{{rhsso_import_dir}} state=directory mode=0755
+
+- name: Copy RH SSO import files
+  copy: src={{item}} dest={{install_script_dir}}/{{rhsso_install_script_dir}}/{{rhsso_import_dir}}
+  with_items:
+    - rhsso-import/kieserver-realm.json
+    - rhsso-import/kieserver-users-0.json

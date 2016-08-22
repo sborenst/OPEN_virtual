@@ -1,0 +1,5 @@
+user: jboss
+install_script_dir: /opt/install/scripts
+rhsso_install_script_dir: rhsso
+rhsso_resources_dir: resources
+rhsso_eap6_adapter_distro: rh-sso-7.0.0-eap6-adapter.zip

@@ -1,0 +1,50 @@
+{
+  "realm" : "kieserver",
+  "users" : [ {
+    "id" : "7f93f0c1-ac9a-43da-b12e-b0955de06bf6",
+    "createdTimestamp" : 1471459625686,
+    "username" : "admin1",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "W53CjOXDH0/kgPbnmfrnw3udOHWNyb15MnxuTcmNWCrMhfosFP3V/FkLuHBrLtVSmiRUePWvJjs9m0fcqpIebQ==",
+      "salt" : "cIRvmz6VZ2hiqJYQXQm4Kg==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1471460138000
+    } ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "kie-server", "offline_access" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ ]
+  }, {
+    "id" : "b4cca9e6-597e-430b-8cd7-ed3869ac4dbf",
+    "createdTimestamp" : 1471459567089,
+    "username" : "user1",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "CRqXWUTap8AKpIRMd1i9QQrPxyvdC/Af2DEIteWEXwRGKYg/5OARZzUQCueQJpMVqOZXaIr/BfWtnLjzLsgPGA==",
+      "salt" : "kQrHsnu/iPyc7213DAU3lA==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "createdDate" : 1471459584000
+    } ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "kie-server", "offline_access", "group1" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "groups" : [ ]
+  } ]
+}

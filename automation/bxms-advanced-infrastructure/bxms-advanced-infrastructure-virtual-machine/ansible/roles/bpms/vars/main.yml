@@ -1,0 +1,11 @@
+user: jboss
+lab_home_dir: /home/jboss/lab
+bpms_install_dir: /home/jboss/lab/bpms
+install_script_dir: /opt/install/scripts
+bpms_install_script_dir: bpms
+bpms_resources_dir: resources
+bpms_install_script: install-bpms-instance.sh
+eap_distro: jboss-eap-6.4.7-full-build.zip
+bpms_distro: jboss-bpmsuite-6.3.0.GA-redhat-4-deployable-eap6.x.zip
+bpms_root_orig: jboss-eap-6.4
+bpms_mysql_driver: /usr/share/java/mysql-connector-java.jar

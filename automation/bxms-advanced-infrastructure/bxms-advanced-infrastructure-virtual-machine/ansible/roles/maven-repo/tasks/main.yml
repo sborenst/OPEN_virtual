@@ -1,0 +1,7 @@
+---
+
+- name: Synchronize maven repository
+  synchronize: src=repository dest=/home/{{user}}/.m2 archive=yes
+
+- name: Set file owner .m2 repository
+  file: path=/home/{{user}}/.m2 recurse=true owner={{user}} group={{user}}

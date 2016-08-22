@@ -1,0 +1,14 @@
+---
+
+- name: Create bpms ddl installation directory
+  file: path={{install_script_dir}}/{{bpms_ddl_install_script_dir}} state=directory mode=0755
+
+- name : Copy ddl files
+  copy: src={{item}} dest={{install_script_dir}}/{{bpms_ddl_install_script_dir}}
+  with_items:
+    - mysql5-dashbuilder-schema.sql
+    - mysql5-jbpm-schema.sql
+    - quartz_tables_mysql.sql
+
+- name: Set file permissions
+  file: path={{install_script_dir}}/{{bpms_ddl_install_script_dir}} recurse=true state=directory mode=0755

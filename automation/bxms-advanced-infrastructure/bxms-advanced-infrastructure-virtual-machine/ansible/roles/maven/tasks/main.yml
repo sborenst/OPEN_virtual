@@ -1,0 +1,37 @@
+---
+
+- name: Create installation target directory
+  file: path={{mvn_install_dir}} state=directory owner={{user}} group={{user}}
+
+- name: Create installation directory
+  file: path={{install_script_dir}}/mvn state=directory mode=0755
+
+- name : Copy Installation files
+  copy: src=install/ dest={{install_script_dir}}/mvn
+
+- name: Set file permissions
+  file: 
+    path={{install_script_dir}}/mvn/{{item}} 
+    mode=0775
+  with_items:
+    - install-mvn.sh
+
+- name: Create installation resources directory
+  file: path={{install_script_dir}}/mvn/resources state=directory mode=0755
+
+- name: Copy Maven distro
+  copy: src={{mvn_distro}} dest={{install_script_dir}}/mvn/resources/{{mvn_distro}}
+
+- name: Install Maven
+  shell: 
+    '{{install_script_dir}}/mvn/install-mvn.sh >> {{install_script_dir}}/mvn-install-log.txt
+    creates={{install_script_dir}}/mvn-install-log.txt'
+
+- name: Set file owner
+  file: path={{mvn_install_dir}}/mvn recurse=true state=directory owner={{user}} group={{user}}
+
+- name: Set file owner .m2 repository
+  file: path=/home/{{user}}/.m2 recurse=true state=directory owner={{user}} group={{user}}
+
+- name: Set file permissions mvn executable
+  file: path={{mvn_install_dir}}/mvn/{{mvn_root}}/bin/mvn mode=0755

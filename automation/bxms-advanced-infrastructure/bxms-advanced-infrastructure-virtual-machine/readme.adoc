@@ -1,0 +1,58 @@
+:scrollbar:
+:data-uri:
+
+== Ansible playbook for BxMS Advanced Infrastructure course virtual machine
+
+=== Base image
+
+* OS : CentOS 7 x68_64
+* Disk: 20GB, dynamically allocated, VDI format
+* Memory : 4GB
+* Base images installation:
+** Hostname: bpms
+** Network: on
+** HDD Partitioning:
+*** File system : ext4
+*** boot 500 MiB, swap 2048 MiB, root partition 17.5 GiB
+** Minimal CentOS installation
+** No user created
+** Root password : jb0ssredhat!
+* Post-installation tasks:
+** copy public ssh key to virtual machine for user root
+
+=== Binary files
+
+The following binary files must be added to the playbook, to the `files` directory of the role:
+
+* Role `bpms` :
+** `jboss-bpmssuite-6.3.0.GA-redhat-4-deployable-eap6.x.zip`
+** `jboss-eap-6.4.7-full-build.zip`
+* Role `rhsso` :
+** `rh-sso-7.0.0.zip`
+* Role `rhsso-adapter` :
+** `rh-sso-7.0.0-eap6-adapter.zip`
+
+=== Maven repository
+
+The `maven-repo` role seeds the Maven repository on the virtual machine by copying the contents of `files/repository` to `/home/jboss/.m2/repository` on the virtual machine.
+
+The `files/repository` directory is initially empty. It can be manually poulated with `rsync` from a virtual machine instance on which the labs have been executed. We are working on a mechanism to have it automatically populated.
+
+=== Inventory file
+
+Copy the `hosts.example` file to `hosts`, and replace `<ip address of virtual machine>` with the IP address of the virtual machine.
+
+=== Provisioning
+
+In the `ansible` directory, issue the following command:
+
+----
+$ ansible-playbook -i hosts bpms.yml
+----
+
+=== Virtual machine compacting
+
+The `zerofree` tool akllows to compact the virtual machine disk size by reclaiming storage of deleted files. +
+The virtual machine has the `zerofree` tool in the `/usr/bin` directory.
+
+For a how-to: http://www.thelinuxdaily.com/2010/02/shrinking-a-dynamic-virtualbox-disk-image/
