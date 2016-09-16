@@ -60,10 +60,17 @@ RUN curl -L -o /opt/openshift/configuration/plugins/sonar.hpi                   
 
 # JA Bride:  upgrading maven, otherwise stock maven from rhel-7-server-optional-rpms channel is used which currently is v3.0.5
 # This version of Maven causes lots of problems
-ENV MAVEN_VERSION=3.3.3
-RUN curl -L -o /tmp/apache-maven.tar.gz http://ftp.wayne.edu/apache/maven/maven-3/3.3.3/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
+# sborenst commented out 4 lines
+#ENV MAVEN_VERSION=3.3.3
+#RUN curl -L -o /tmp/apache-maven.tar.gz http://ftp.wayne.edu/apache/maven/maven-3/3.3.3/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
+#    tar -zxvf /tmp/apache-maven.tar.gz -C /opt && \
+#    rm -f /tmp/apache-maven.tar.gz
+# sborenst added 2 lines
+ENV MAVEN_VERSION=3.3.9
+RUN curl -L -o /tmp/apache-maven.tar.gz http://ftp.wayne.edu/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz && \
     tar -zxvf /tmp/apache-maven.tar.gz -C /opt && \
     rm -f /tmp/apache-maven.tar.gz
+
 ENV PATH=/opt/apache-maven-$MAVEN_VERSION/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/sbin:/usr/sbin
 
 # JA Bride:  installing nodejs and npm to support CI of javascript apps
